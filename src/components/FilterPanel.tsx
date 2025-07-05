@@ -2,8 +2,9 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import Image from 'next/image'; // اضافه کردن ایمپورت Image
 import { X, Check } from 'lucide-react';
-import { FilterRule } from '../types'; // <--- این خط اضافه شد
+import { FilterRule } from '../types';
 
 // --- Muscle Options ---
 export interface MuscleOption {
@@ -304,14 +305,19 @@ export function FilterPanel({ isOpen, onClose, currentFilters, onApplyFilters }:
                     }`}
                   onClick={() => toggleMuscleSelection(muscle.id)}
                 >
-                  <img
-                    src={getImageUrl(muscle.imageName)}
-                    alt={muscle.displayName}
-                    className="w-20 h-20 object-contain mb-2 rounded-lg bg-gray-200 dark:bg-gray-600 p-1"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = 'https://placehold.co/100x100/e0e0e0/000000?text=No+Image';
-                    }}
-                  />
+                  {/* استفاده از کامپوننت Image از next/image */}
+                  <div className="relative w-20 h-20 mb-2 rounded-lg bg-gray-200 dark:bg-gray-600 p-1">
+                    <Image
+                      src={getImageUrl(muscle.imageName)}
+                      alt={muscle.displayName}
+                      fill
+                      sizes="80px"
+                      style={{ objectFit: 'contain' }}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://placehold.co/100x100/e0e0e0/000000?text=No+Image';
+                      }}
+                    />
+                  </div>
                   <span className="text-sm font-medium text-center text-gray-900 dark:text-white">
                     {muscle.displayName}
                   </span>
@@ -337,14 +343,19 @@ export function FilterPanel({ isOpen, onClose, currentFilters, onApplyFilters }:
                     }`}
                   onClick={() => toggleEquipmentSelection(equipment.id)}
                 >
-                  <img
-                    src={getImageUrl(equipment.imageName)}
-                    alt={equipment.displayName}
-                    className="w-20 h-20 object-contain mb-2 rounded-lg bg-gray-200 dark:bg-gray-600 p-1"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = 'https://placehold.co/100x100/e0e0e0/000000?text=No+Image';
-                    }}
-                  />
+                  {/* استفاده از کامپوننت Image از next/image */}
+                  <div className="relative w-20 h-20 mb-2 rounded-lg bg-gray-200 dark:bg-gray-600 p-1">
+                    <Image
+                      src={getImageUrl(equipment.imageName)}
+                      alt={equipment.displayName}
+                      fill
+                      sizes="80px"
+                      style={{ objectFit: 'contain' }}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://placehold.co/100x100/e0e0e0/000000?text=No+Image';
+                      }}
+                    />
+                  </div>
                   <span className="text-sm font-medium text-center text-gray-900 dark:text-white">
                     {equipment.displayName}
                   </span>

@@ -1,6 +1,7 @@
 // src/components/ExerciseCard.tsx
 import React from 'react';
-import Link from 'next/link'; // تغییر از 'react-router-dom' به 'next/link'
+import Link from 'next/link';
+import Image from 'next/image'; // اضافه کردن ایمپورت Image
 import { Exercise } from '../types';
 
 interface ExerciseCardProps {
@@ -28,17 +29,20 @@ export function ExerciseCard({ exercise, sessionName }: ExerciseCardProps) {
       href={`/exercise/${exercise.id}`} // تغییر از `to` به `href`
       className="group block bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600"
     >
-      <div className="relative">
-        <img
-          src={getImageUrl(exercise.image)} // استفاده از تابع جدید برای گرفتن URL تصویر
+      <div className="relative w-full h-48"> {/* اضافه کردن width و height و relative */}
+        {/* استفاده از کامپوننت Image از next/image */}
+        <Image
+          src={getImageUrl(exercise.image)}
           alt={exercise.name}
-          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+          fill // برای پر کردن فضای والد
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" // تنظیمات ریسپانسیو
+          style={{ objectFit: 'cover' }} // نحوه قرارگیری تصویر
           onError={(e) => {
             (e.target as HTMLImageElement).src = defaultImage;
           }}
         />
         {sessionName && (
-          <div className="absolute top-2 right-2 bg-blue-600 text-white text-xs px-2 py-1 rounded-full">
+          <div className="absolute top-2 right-2 bg-blue-600 text-white text-xs px-2 py-1 rounded-full z-10"> {/* اضافه کردن z-10 برای اطمینان از نمایش روی تصویر */}
             {sessionName}
           </div>
         )}

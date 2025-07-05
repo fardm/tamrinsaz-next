@@ -1,5 +1,6 @@
 // src/components/ImageTextDisplay.tsx
 import React from 'react';
+import Image from 'next/image'; // اضافه کردن ایمپورت Image
 
 interface ImageTextDisplayProps {
   text: string;
@@ -35,14 +36,19 @@ export function ImageTextDisplay({ text, imageName, altText, onClick, filterValu
       `}
       onClick={handleClick}
     >
-      <img
-        src={getImageUrl(imageName)}
-        alt={altText}
-        className="w-16 h-16 object-contain mb-1 rounded-lg bg-gray-200 dark:bg-gray-600 p-1"
-        onError={(e) => {
-          (e.target as HTMLImageElement).src = 'https://placehold.co/100x100/e0e0e0/000000?text=No+Image'; // Fallback
-        }}
-      />
+      {/* استفاده از کامپوننت Image از next/image */}
+      <div className="relative w-16 h-16 mb-1 rounded-lg bg-gray-200 dark:bg-gray-600 p-1">
+        <Image
+          src={getImageUrl(imageName)}
+          alt={altText}
+          fill // برای پر کردن فضای والد
+          sizes="64px" // تنظیم سایز برای بهینه‌سازی
+          style={{ objectFit: 'contain' }} // نحوه قرارگیری تصویر
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = 'https://placehold.co/100x100/e0e0e0/000000?text=No+Image'; // Fallback
+          }}
+        />
+      </div>
       <span className="text-sm font-medium text-center text-gray-900 dark:text-white">
         {text}
       </span>

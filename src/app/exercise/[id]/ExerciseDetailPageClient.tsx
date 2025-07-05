@@ -1,10 +1,11 @@
 // src/app/exercise/[id]/ExerciseDetailPageClient.tsx
 "use client"; // این خط این فایل را به یک Client Component تبدیل می‌کند.
 
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'next/navigation'; // useParams می‌تواند در Client Components استفاده شود
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { ArrowRight, Plus, Check, X, SquarePen } from 'lucide-react';
 import { exercisesData } from '../../../data/exercises';
 import { AddToWorkoutModal } from '../../../components/AddToWorkoutModal';
@@ -13,8 +14,22 @@ import { ImageTextDisplay } from '../../../components/ImageTextDisplay';
 import { muscleOptions, equipmentOptionsList } from '../../../components/FilterPanel';
 import { getUserData, saveUserData } from '../../../utils/storage';
 
-export default function ExerciseDetailPageClient() { // نام تابع به ExerciseDetailPageClient تغییر یافت.
-  const { id } = useParams<{ id: string }>(); // useParams برای دریافت id در Client Component استفاده می‌شود.
+// تعریف defaultImage و getImageUrl در خارج از کامپوننت
+const defaultImage = 'https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=800';
+
+const getImageUrl = (imageName: string | undefined) => {
+  if (imageName) {
+    if (imageName.startsWith('http')) {
+      return imageName;
+    } else {
+      return `/images/${imageName}`;
+    }
+  }
+  return defaultImage;
+};
+
+export default function ExerciseDetailPageClient() {
+  const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -24,7 +39,7 @@ export default function ExerciseDetailPageClient() { // نام تابع به Exe
   const [showEditNotesModal, setShowEditNotesModal] = useState(false);
   const [sessionBeingEdited, setSessionBeingEdited] = useState<string | null>(null);
   const [currentNotes, setCurrentNotes] = useState<string>('');
-  const editNotesModalRef = useRef<HTMLDivElement>(null); // اطمینان حاصل کنید که این HTMLDivElement است.
+  const editNotesModalRef = useRef<HTMLDivElement>(null);
 
   const [userData, setUserData] = useState<UserData>({ sessions: [] });
 
@@ -37,12 +52,11 @@ export default function ExerciseDetailPageClient() { // نام تابع به Exe
     setUserData(getUserData());
   }, []);
 
-  // تعریف تابع handleCancelEditNotes در اینجا
-  const handleCancelEditNotes = () => {
+  const handleCancelEditNotes = useCallback(() => {
     setShowEditNotesModal(false);
     setSessionBeingEdited(null);
     setCurrentNotes('');
-  };
+  }, []);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -53,7 +67,7 @@ export default function ExerciseDetailPageClient() { // نام تابع به Exe
           setSessionIdToDelete(null);
         }
         if (showEditNotesModal) {
-          handleCancelEditNotes(); // فراخوانی مستقیم تابع تعریف شده
+          handleCancelEditNotes();
         }
       }
     };
@@ -77,7 +91,7 @@ export default function ExerciseDetailPageClient() { // نام تابع به Exe
         editNotesModalRef.current &&
         !editNotesModalRef.current.contains(event.target as Node)
       ) {
-        handleCancelEditNotes(); // فراخوانی مستقیم تابع تعریف شده
+        handleCancelEditNotes();
       }
     };
 
@@ -92,7 +106,7 @@ export default function ExerciseDetailPageClient() { // نام تابع به Exe
       document.removeEventListener('keydown', handleEscape);
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showAddModal, showDeleteModal, showEditNotesModal, handleCancelEditNotes]); // handleCancelEditNotes را به وابستگی‌ها اضافه کنید
+  }, [showAddModal, showDeleteModal, showEditNotesModal, handleCancelEditNotes]);
 
   const exercise = exercisesData.find(ex => ex.id === id);
 
@@ -216,19 +230,6 @@ export default function ExerciseDetailPageClient() { // نام تابع به Exe
     }
   };
 
-  const defaultImage = 'https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=800';
-
-  const getImageUrl = (imageName: string | undefined) => {
-    if (imageName) {
-      if (imageName.startsWith('http')) {
-        return imageName;
-      } else {
-        return `/images/${imageName}`;
-      }
-    }
-    return defaultImage;
-  };
-
   const getMuscleImageName = (muscleDisplayName: string): string => {
     const muscle = muscleOptions.find(opt => opt.displayName === muscleDisplayName || opt.filterNames.includes(muscleDisplayName));
     return muscle ? muscle.imageName : 'placeholder.webp';
@@ -250,14 +251,14 @@ export default function ExerciseDetailPageClient() { // نام تابع به Exe
   return (
     <div className="max-w-[35rem] mx-auto px-2 sm:px-6 lg:px-8 py-6">
       <div className="overflow-hidden">
-        <div className="aspect-video flex items-center justify-center bg-white dark:bg-white rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden mb-4">
-          <img
+        {/* اضافه کردن 'relative' به والد Image برای کارکرد صحیح 'fill' */}
+        <div className="relative aspect-video flex items-center justify-center bg-white dark:bg-white rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden mb-4">
+          <Image
             src={getImageUrl(exercise.image)}
             alt={exercise.name}
-            className="h-full object-contain"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = defaultImage;
-            }}
+            fill
+            sizes="(max-width: 768px) 100vw, 35rem"
+            style={{ objectFit: 'contain' }}
           />
         </div>
 
@@ -444,7 +445,7 @@ export default function ExerciseDetailPageClient() { // نام تابع به Exe
                 ویرایش توضیحات تمرین
               </h3>
               <button
-                onClick={handleCancelEditNotes} // <--- خط 444: این خط باید کار کند
+                onClick={handleCancelEditNotes}
                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               >
                 <X className="h-5 w-5" />
@@ -467,7 +468,7 @@ export default function ExerciseDetailPageClient() { // نام تابع به Exe
                 تأیید
               </button>
               <button
-                onClick={handleCancelEditNotes} // <--- این فراخوانی هم باید کار کند
+                onClick={handleCancelEditNotes}
                 className="flex-1 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors"
               >
                 لغو

@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
+import Image from 'next/image'; // اضافه کردن ایمپورت Image
 import { SearchBar } from '../components/SearchBar';
 import { ExerciseGrid } from '../components/ExerciseGrid';
 import { exercisesData } from '../data/exercises';
@@ -16,7 +17,9 @@ const EXERCISES_PER_PAGE = 20;
 export default function HomePage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useLocalStorage<FilterRule[]>('tamrinsaz-filters', []);
-  const [sortRules, setSortRules] = useState<SortRule[]>([]); // Keep this if SortPanel will be re-added
+  // 'setSortRules' را کامنت می‌کنیم چون SortPanel در حال حاضر استفاده نمی‌شود.
+  // اگر قصد دارید SortPanel را دوباره اضافه کنید، باید این خط را فعال کنید.
+  // const [sortRules, setSortRules] = useState<SortRule[]>([]); 
   const [visibleExerciseCount, setVisibleExerciseCount] = useState(EXERCISES_PER_PAGE);
   const [isLoading, setIsLoading] = useState(false);
   const loaderRef = useRef<HTMLDivElement>(null);
@@ -26,7 +29,8 @@ export default function HomePage() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const [userData, setUserData] = useLocalStorage<UserData>('tamrinsaz-user-data', { sessions: [] }); // Keep setUserData as it might be used internally by useLocalStorage
+  // هشدار 'setUserData' را با کامنت ESLint غیرفعال می‌کنیم، زیرا این متغیر توسط هوک useLocalStorage استفاده می‌شود.
+  const [userData, setUserData] = useLocalStorage<UserData>('tamrinsaz-user-data', { sessions: [] }); // eslint-disable-line @typescript-eslint/no-unused-vars
 
   useEffect(() => {
     const filterField = searchParams.get('filterField');
@@ -88,31 +92,32 @@ export default function HomePage() {
       }
     });
 
-    if (sortRules.length > 0) {
-      result.sort((a, b) => {
-        for (const rule of sortRules) {
-          let comparison = 0;
-          
-          if (rule.field === 'name') {
-            comparison = a.name.localeCompare(b.name, 'fa');
-          } else if (rule.field === 'equipment') {
-            comparison = a.equipment.localeCompare(b.equipment, 'fa');
-          } else if (rule.field === 'targetMuscles') {
-            comparison = a.targetMuscles[0]?.localeCompare(b.targetMuscles[0] || '', 'fa') || 0;
-          }
+    // اگر SortPanel کامنت شده است، این بخش نیز باید غیرفعال شود.
+    // if (sortRules.length > 0) {
+    //   result.sort((a, b) => {
+    //     for (const rule of sortRules) {
+    //       let comparison = 0;
+            
+    //       if (rule.field === 'name') {
+    //         comparison = a.name.localeCompare(b.name, 'fa');
+    //       } else if (rule.field === 'equipment') {
+    //         comparison = a.equipment.localeCompare(b.equipment, 'fa');
+    //       } else if (rule.field === 'targetMuscles') {
+    //         comparison = a.targetMuscles[0]?.localeCompare(b.targetMuscles[0] || '', 'fa') || 0;
+    //       }
 
-          if (comparison !== 0) {
-            return rule.direction === 'desc' ? -comparison : comparison;
-          }
-        }
-        return 0;
-      });
-    }
+    //       if (comparison !== 0) {
+    //         return rule.direction === 'desc' ? -comparison : comparison;
+    //       }
+    //     }
+    //     return 0;
+    //   });
+    // }
 
     setVisibleExerciseCount(EXERCISES_PER_PAGE);
 
     return result;
-  }, [searchTerm, filters, sortRules]);
+  }, [searchTerm, filters]); // sortRules از وابستگی‌ها حذف شد
   
   const exercisesToShow = filteredAndSortedExercises.slice(0, visibleExerciseCount);
   const hasMoreExercises = filteredAndSortedExercises.length > exercisesToShow.length;

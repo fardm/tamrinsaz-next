@@ -1,10 +1,11 @@
 // src/components/SessionCard.tsx
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { WorkoutSession, Exercise } from '../types';
-import { Trash2, SquarePen, X } from 'lucide-react'; // Removed Edit2, Check
+import { Trash2, SquarePen, X, Check } from 'lucide-react'; // اضافه کردن Check به ایمپورت
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface SessionCardProps {
   session: WorkoutSession;
@@ -43,10 +44,10 @@ export function SessionCard({
     setIsEditing(false);
   };
 
-  const handleCancelEdit = () => {
+  const handleCancelEdit = useCallback(() => {
     setEditName(session.name);
     setIsEditing(false);
-  };
+  }, [session.name]);
 
   const handleOpenDeleteExerciseModal = (exerciseId: string) => {
     setExerciseToDelete(exerciseId);
@@ -61,10 +62,10 @@ export function SessionCard({
     setExerciseToDelete(null);
   };
 
-  const handleCancelDeleteExercise = () => {
+  const handleCancelDeleteExercise = useCallback(() => {
     setIsDeleteExerciseModalOpen(false);
     setExerciseToDelete(null);
-  };
+  }, []);
 
   const handleOpenDeleteSessionModal = () => {
     setIsDeleteSessionModalOpen(true);
@@ -75,8 +76,14 @@ export function SessionCard({
     setIsDeleteSessionModalOpen(false);
   };
 
-  const handleCancelDeleteSession = () => {
+  const handleCancelDeleteSession = useCallback(() => {
     setIsDeleteSessionModalOpen(false);
+  }, []);
+
+  const handleEditNameInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSaveEdit();
+    }
   };
 
   useEffect(() => {
@@ -99,7 +106,7 @@ export function SessionCard({
       window.removeEventListener('keydown', handleEsc);
       document.body.style.overflow = '';
     };
-  }, [isEditing, isDeleteExerciseModalOpen, isDeleteSessionModalOpen, handleCancelEdit, handleCancelDeleteExercise, handleCancelDeleteSession]); // Added missing dependencies
+  }, [isEditing, isDeleteExerciseModalOpen, isDeleteSessionModalOpen, handleCancelEdit, handleCancelDeleteExercise, handleCancelDeleteSession]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -115,7 +122,7 @@ export function SessionCard({
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isEditing, isDeleteExerciseModalOpen, isDeleteSessionModalOpen, handleCancelEdit, handleCancelDeleteExercise, handleCancelDeleteSession]); // Added missing dependencies
+  }, [isEditing, isDeleteExerciseModalOpen, isDeleteSessionModalOpen, handleCancelEdit, handleCancelDeleteExercise, handleCancelDeleteSession]);
 
   const defaultImage = 'https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=100';
 
@@ -271,14 +278,18 @@ export function SessionCard({
                 <X className="h-4 w-4" />
               </button>
 
-              <img
-                src={getImageUrl(exercise.image)}
-                alt={exercise.name}
-                className="w-12 h-12 object-cover rounded-lg flex-shrink-0"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = defaultImage;
-                }}
-              />
+              <div className="relative w-12 h-12 flex-shrink-0 rounded-lg">
+                <Image
+                  src={getImageUrl(exercise.image)}
+                  alt={exercise.name}
+                  fill
+                  sizes="48px"
+                  style={{ objectFit: 'cover' }}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = defaultImage;
+                  }}
+                />
+              </div>
 
               <div className="flex-1 min-w-0 mt-1 sm:mt-0">
                 <Link
