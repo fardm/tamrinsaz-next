@@ -4,42 +4,41 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Moon, Sun, Menu, Bot, ClipboardList, X, Banknote, Github, Send } from 'lucide-react';
+// 'Banknote' از اینجا حذف شد
+import { Moon, Sun, Menu, Bot, ClipboardList, X, Github, Send } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 import { UserData } from '../types';
 
-// HeaderProps دیگر نیازی به onDataChange ندارد
-interface HeaderProps {
-  // onDataChange: () => void; // حذف شد
-}
+// HeaderProps دیگر نیازی به onDataChange ندارد و اگر پروپ دیگری هم ندارد، می‌توان آن را حذف کرد
+// interface HeaderProps {} // این خط حذف می‌شود
 
 // onDataChange دیگر به عنوان پراپ دریافت نمی‌شود
-export function Header({ /* onDataChange */ }: HeaderProps) {
+export function Header() { // <--- تابع به این شکل تغییر می‌کند
   const { isDark, toggleTheme } = useTheme();
   const pathname = usePathname();
-  const router = useRouter();
+  // const router = useRouter(); // <--- این خط حذف شد چون متغیر 'router' استفاده نمی‌شود
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   // دریافت userData از localStorage (این بخش برای نمایش Toast در صورت نیاز یا منطق آینده حفظ می‌شود)
-  const [userData, setUserData] = useState<UserData>(() => {
-    if (typeof window === 'undefined') {
-      return { sessions: [] };
-    }
-    try {
-      const storedData = localStorage.getItem('tamrinsaz-user-data');
-      return storedData ? JSON.parse(storedData) : { sessions: [] };
-    } catch (error) {
-      console.error('Error loading user data from localStorage:', error);
-      return { sessions: [] };
-    }
-  });
+  // const [userData, setUserData] = useState<UserData>(() => { // <--- این خط حذف شد چون متغیر 'userData' استفاده نمی‌شود
+  //   if (typeof window === 'undefined') {
+  //     return { sessions: [] };
+  //   }
+  //   try {
+  //     const storedData = localStorage.getItem('tamrinsaz-user-data');
+  //     return storedData ? JSON.parse(storedData) : { sessions: [] };
+  //   } catch (error) {
+  //     console.error('Error loading user data from localStorage:', error);
+  //     return { sessions: [] };
+  //   }
+  // });
 
   // تابع به‌روزرسانی userData (این تابع برای منطق آینده حفظ می‌شود، اما دیگر مستقیماً توسط دکمه‌های این Header فراخوانی نمی‌شود)
-  const handleUpdateUserData = (newData: UserData) => {
-    setUserData(newData);
-    // onDataChange(); // حذف شد، چون دیگر وجود ندارد
-  };
+  // const handleUpdateUserData = (newData: UserData) => { // <--- این خط حذف شد چون تابع 'handleUpdateUserData' استفاده نمی‌شود
+  //   setUserData(newData);
+  //   // onDataChange(); // حذف شد، چون دیگر وجود ندارد
+  // };
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -68,13 +67,13 @@ export function Header({ /* onDataChange */ }: HeaderProps) {
     };
   }, [showMobileMenu]);
 
-  const getNavLinkClass = (path: string) => {
-    return `relative px-3 py-2 rounded-md text-sm font-medium transition-colors
-            ${pathname === path
-              ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
-              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-            }`;
-  };
+  // const getNavLinkClass = (path: string) => { // <--- این خط حذف شد چون تابع 'getNavLinkClass' استفاده نمی‌شود
+  //   return `relative px-3 py-2 rounded-md text-sm font-medium transition-colors
+  //           ${pathname === path
+  //             ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+  //             : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+  //           }`;
+  // };
 
   const getMenuItemClass = (path: string) => {
     return `w-full px-4 py-2 text-right text-base font-medium flex items-center space-x-3 space-x-reverse transition-colors

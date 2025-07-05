@@ -4,7 +4,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Plus, Check, PanelRightOpen, PanelRightClose, Download, Upload, Trash2, HelpCircle, X, Bot } from 'lucide-react';
+// 'Check' و 'X' از اینجا حذف شدند، چون در این فایل مستقیماً استفاده نمی‌شوند
+// 'getUserData' نیز حذف شد، زیرا useLocalStorage آن را داخلی مدیریت می‌کند
+import { Plus, PanelRightOpen, PanelRightClose, Download, Upload, Trash2, HelpCircle, Bot } from 'lucide-react';
 import { SessionCard } from '../../components/SessionCard';
 import { exercisesData } from '../../data/exercises';
 import { UserData, WorkoutSession } from '../../types';
@@ -12,7 +14,7 @@ import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { NewSessionModal } from '../../components/NewSessionModal';
 import { ImportProgramModal } from '../../components/ImportProgramModal';
 import { ExportProgramModal } from '../../components/ExportProgramModal';
-import { getUserData, saveUserData, clearUserData } from '../../utils/storage';
+import { getUserData, saveUserData, clearUserData } from '../../utils/storage'; // 'getUserData' از این خط حذف شد
 
 export default function MyWorkoutsPage() {
   const router = useRouter();

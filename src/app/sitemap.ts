@@ -7,7 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const exerciseUrls = exercisesData.map(exercise => ({
     url: `${baseUrl}/exercise/${exercise.id}`,
     lastModified: new Date(), // تاریخ آخرین تغییر، می‌توانید منطق دقیق‌تری داشته باشید
-    changeFrequency: 'weekly' as 'weekly', // یا 'daily', 'monthly' و غیره
+    changeFrequency: 'weekly' as const, // <--- این خط اصلاح شد
     priority: 0.7,
   }));
 

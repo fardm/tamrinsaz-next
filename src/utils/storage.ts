@@ -8,7 +8,7 @@ export const getUserData = (): UserData => {
     if (data) {
       const parsed = JSON.parse(data);
       // Convert date strings back to Date objects
-      parsed.sessions = parsed.sessions.map((session: any) => ({
+      parsed.sessions = parsed.sessions.map((session: WorkoutSession) => ({ // <--- این خط اصلاح شد
         ...session,
         createdAt: new Date(session.createdAt)
       }));
@@ -49,7 +49,7 @@ export const importUserData = (file: File): Promise<UserData> => {
         const data = JSON.parse(e.target?.result as string);
         // Validate and convert dates
         if (data.sessions && Array.isArray(data.sessions)) {
-          data.sessions = data.sessions.map((session: any) => ({
+          data.sessions = data.sessions.map((session: WorkoutSession) => ({ // <--- این خط اصلاح شد
             ...session,
             createdAt: new Date(session.createdAt || Date.now())
           }));

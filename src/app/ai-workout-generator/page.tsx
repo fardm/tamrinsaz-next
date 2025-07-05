@@ -25,24 +25,24 @@ export default function AIGenWorkoutPage() { // تغییر: export default funct
 ۶. خروجی را در قالب یک فایل JSON طبق ساختار زیر بساز (باحفظ نام فیلد فقط مقدار را بنویس):
 
 {
-  "sessions": [
+  &quot;sessions&quot;: [
     {
-      "id": "1751438995832",
-      "name": "جلسه 1",
-      "exercises": [
-        { "exerciseId": "46", "completed": false, "notes": "12*4" },
-        { "exerciseId": "84", "completed": false, "notes": "15*3" }
+      &quot;id&quot;: &quot;1751438995832&quot;,
+      &quot;name&quot;: &quot;جلسه 1&quot;,
+      &quot;exercises&quot;: [
+        { &quot;exerciseId&quot;: &quot;46&quot;, &quot;completed&quot;: false, &quot;notes&quot;: &quot;12*4&quot; },
+        { &quot;exerciseId&quot;: &quot;84&quot;, &quot;completed&quot;: false, &quot;notes&quot;: &quot;15*3&quot; }
       ],
-      "createdAt": "2025-07-02T06:49:55.832Z"
+      &quot;createdAt&quot;: &quot;2025-07-02T06:49:55.832Z&quot;
     },
     {
-      "id": "1751439812805",
-      "name": "جلسه 2",
-      "exercises": [
-        { "exerciseId": "17", "completed": false, "notes": "12*4" },
-        { "exerciseId": "15", "completed": false, "notes": "12*3" }
+      &quot;id&quot;: &quot;1751439812805&quot;,
+      &quot;name&quot;: &quot;جلسه 2&quot;,
+      &quot;exercises&quot;: [
+        { &quot;exerciseId&quot;: &quot;17&quot;, &quot;completed&quot;: false, &quot;notes&quot;: &quot;12*4&quot; },
+        { &quot;exerciseId&quot;: &quot;15&quot;, &quot;completed&quot;: false, &quot;notes&quot;: &quot;12*3&quot; }
       ],
-      "createdAt": "2025-07-02T07:03:32.805Z"
+      &quot;createdAt&quot;: &quot;2025-07-02T07:03:32.805Z&quot;
     }
   ]
 }

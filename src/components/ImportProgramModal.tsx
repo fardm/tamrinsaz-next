@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { X, Upload, Trash2 } from 'lucide-react';
 import { importUserData, saveUserData } from '../utils/storage';
-import { UserData } from '../types';
+import { UserData, WorkoutSession } from '../types'; // 'WorkoutSession' را هم ایمپورت کنید
 
 interface ImportProgramModalProps {
   isOpen: boolean;
@@ -88,7 +88,7 @@ export function ImportProgramModal({ isOpen, onClose, onUpdateUserData, showToas
           throw new Error('ساختار JSON نامعتبر است.');
         }
         // Convert date strings back to Date objects
-        dataToImport.sessions = dataToImport.sessions.map((session: any) => ({
+        dataToImport.sessions = dataToImport.sessions.map((session: WorkoutSession) => ({ // <--- این خط اصلاح شد
           ...session,
           createdAt: new Date(session.createdAt || Date.now())
         }));
