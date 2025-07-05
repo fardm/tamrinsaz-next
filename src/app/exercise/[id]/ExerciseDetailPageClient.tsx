@@ -37,6 +37,13 @@ export default function ExerciseDetailPageClient() { // نام تابع به Exe
     setUserData(getUserData());
   }, []);
 
+  // تعریف تابع handleCancelEditNotes در اینجا
+  const handleCancelEditNotes = () => {
+    setShowEditNotesModal(false);
+    setSessionBeingEdited(null);
+    setCurrentNotes('');
+  };
+
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -46,9 +53,7 @@ export default function ExerciseDetailPageClient() { // نام تابع به Exe
           setSessionIdToDelete(null);
         }
         if (showEditNotesModal) {
-          setShowEditNotesModal(false);
-          setSessionBeingEdited(null);
-          setCurrentNotes('');
+          handleCancelEditNotes(); // فراخوانی مستقیم تابع تعریف شده
         }
       }
     };
@@ -72,9 +77,7 @@ export default function ExerciseDetailPageClient() { // نام تابع به Exe
         editNotesModalRef.current &&
         !editNotesModalRef.current.contains(event.target as Node)
       ) {
-        setShowEditNotesModal(false);
-        setSessionBeingEdited(null);
-        setCurrentNotes('');
+        handleCancelEditNotes(); // فراخوانی مستقیم تابع تعریف شده
       }
     };
 
@@ -89,10 +92,10 @@ export default function ExerciseDetailPageClient() { // نام تابع به Exe
       document.removeEventListener('keydown', handleEscape);
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showAddModal, showDeleteModal, showEditNotesModal]);
+  }, [showAddModal, showDeleteModal, showEditNotesModal, handleCancelEditNotes]); // handleCancelEditNotes را به وابستگی‌ها اضافه کنید
 
   const exercise = exercisesData.find(ex => ex.id === id);
-  
+
   if (!exercise) {
     return (
       <div className="max-w-[35rem] mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -316,7 +319,7 @@ export default function ExerciseDetailPageClient() { // نام تابع به Exe
               />
             </div>
           )}
-          
+
           {sessionsWithExercise.length > 0 && (
             <div className="mt-8">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
@@ -441,7 +444,7 @@ export default function ExerciseDetailPageClient() { // نام تابع به Exe
                 ویرایش توضیحات تمرین
               </h3>
               <button
-                onClick={handleCancelEditNotes}
+                onClick={handleCancelEditNotes} // <--- خط 444: این خط باید کار کند
                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               >
                 <X className="h-5 w-5" />
@@ -464,7 +467,7 @@ export default function ExerciseDetailPageClient() { // نام تابع به Exe
                 تأیید
               </button>
               <button
-                onClick={handleCancelEditNotes}
+                onClick={handleCancelEditNotes} // <--- این فراخوانی هم باید کار کند
                 className="flex-1 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors"
               >
                 لغو
