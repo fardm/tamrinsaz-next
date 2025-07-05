@@ -15,17 +15,23 @@ export async function generateMetadata({ params }: { params: any }): Promise<Met
     };
   }
 
-  const title = `${exercise.name} - تمرین‌ساز`;
-  const description = `جزئیات کامل تمرین ${exercise.name} شامل عضلات درگیر، وسایل مورد نیاز و توضیحات. ${exercise.otherNames ? `نام‌های دیگر: ${exercise.otherNames}.` : ''}`;
+  const title = `${exercise.name} | تمرین‌ساز بدنسازی`;
+  const description = `در این صفحه با ${exercise.name} آشنا می‌شوید؛ از عضلات درگیر و تجهیزات مورد نیاز تا اجرای اصولی و حرفه‌ای حرکت.${exercise.otherNames ? ` این تمرین با عنوان ${exercise.otherNames} هم شناخته می‌شود.` : ''}`;
   const keywords = [
     exercise.name,
     ...exercise.targetMuscles,
     exercise.equipment,
-    "تمرین",
-    "بدنسازی",
-    "فیتنس",
-    "آموزش",
-    "ورزش"
+    `تمرین ${exercise.name}`,
+    `آموزش ${exercise.name}`,
+    `نحوه انجام ${exercise.name}`,
+    `حرکت ${exercise.name}`,
+    `تمرین ${exercise.targetMuscles}`,
+    "تمرین بدنسازی",
+    "حرکات بدنسازی",
+    "برنامه تمرینی",
+    "ورزش در خانه",
+    "آموزش تصویری تمرین",
+    "فرم صحیح تمرین"
   ];
   if (exercise.otherNames) {
     keywords.push(...exercise.otherNames.split(',').map(name => name.trim()));

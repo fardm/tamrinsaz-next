@@ -8,20 +8,20 @@ import { Footer } from "../components/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "تمرین‌ساز - برنامه‌ساز ورزشی و تمرینات بدنسازی",
-  description: "با تمرین‌ساز، برنامه ورزشی خود را بسازید و به مجموعه کاملی از تمرینات بدنسازی دسترسی داشته باشید. شامل عضلات درگیر، وسایل مورد نیاز و توضیحات کامل.",
-  keywords: ["تمرین‌ساز", "برنامه ورزشی", "بدنسازی", "تمرینات", "فیتنس", "عضلات", "باشگاه", "ورزش"],
+  title: "تمرین‌ساز بدنسازی | ساخت برنامه بدنسازی",
+  description: "با تمرین‌ساز برنامه تمرینی شخصی‌سازی‌شده بسازید و به بانک کامل تمرینات بدنسازی با توضیحات، عضلات هدف و ویدیوهای آموزشی دسترسی داشته باشید.",
+  keywords: ["تمرین‌ساز", "برنامه ورزشی", "برنامه بدنسازی", "تمرینات بدنسازی", "ورزش در خانه", "بدنسازی در باشگاه", "ورزش"],
   openGraph: {
-    title: "تمرین‌ساز - برنامه‌ساز ورزشی و تمرینات بدنسازی",
-    description: "با تمرین‌ساز، برنامه ورزشی خود را بسازید و به مجموعه کاملی از تمرینات بدنسازی دسترسی داشته باشید.",
+    title: "تمرین‌ساز بدنسازی | ساخت برنامه بدنسازی",
+    description: "با تمرین‌ساز برنامه تمرینی شخصی‌سازی‌شده بسازید و به بانک کامل تمرینات بدنسازی با توضیحات، عضلات هدف و ویدیوهای آموزشی دسترسی داشته باشید.",
     url: "https://app.tamrinsaz.ir",
-    siteName: "تمرین‌ساز",
+    siteName: "تمرین‌ساز بدنسازی",
     images: [
       {
         url: "https://app.tamrinsaz.ir/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "تمرین‌ساز - برنامه ورزشی",
+        alt: "تمرین‌ساز بدنسازی | برنامه بدنسازی",
       },
     ],
     locale: "fa_IR",
@@ -29,16 +29,16 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "تمرین‌ساز - برنامه‌ساز ورزشی و تمرینات بدنسازی",
-    description: "با تمرین‌ساز، برنامه ورزشی خود را بسازید و به مجموعه کاملی از تمرینات بدنسازی دسترسی داشته باشید.",
-    images: ["https://app.tamrinsaz.ir/twitter-image.jpg"],
+    title: "تمرین‌ساز بدنسازی | ساخت برنامه بدنسازی",
+    description: "با تمرین‌ساز برنامه تمرینی شخصی‌سازی‌شده بسازید و به بانک کامل تمرینات بدنسازی با توضیحات، عضلات هدف و ویدیوهای آموزشی دسترسی داشته باشید.",
+    images: ["https://app.tamrinsaz.ir/og-image.jpg"],
   },
   other: {
     "dc.language": "fa",
     "og:locale:alternate": "fa_IR",
   },
-  icons: { // اضافه کردن آیکون‌ها برای فاوآیکون
-    icon: '/favicon.svg', // مسیردهی به فایل فاوآیکون در پوشه public
+  icons: { 
+    icon: '/favicon.svg',
     // shortcut: '/favicon-16x16.png', // می‌توانید سایزهای مختلف را اضافه کنید
     // apple: '/apple-touch-icon.png', // برای دستگاه‌های اپل
   },
@@ -50,7 +50,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // حذف فضای خالی بین تگ <html> و <body>
     <html lang="fa" dir="rtl"><body className={`${inter.className} bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white flex flex-col min-h-screen`}>
       <Header />
       <main className="flex-grow container mx-auto p-4">
