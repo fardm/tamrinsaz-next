@@ -11,10 +11,8 @@ export async function generateStaticParams() {
   }));
 }
 
-// این تابع به عنوان Server Component عمل می‌کند.
-// این تابع پارامترهای دینامیک را دریافت می‌کند و Client Component را رندر می‌کند.
-export default function ExerciseDetailPage({ params }: { params: { id: string } }) {
-  // Client Component (ExerciseDetailPageClient) می‌تواند خودش از useParams استفاده کند،
-  // بنابراین نیازی به پاس دادن id از اینجا نیست مگر اینکه داده‌های سمت سرور دیگری لازم باشد.
+// این تابع به عنوان Server Component عمل می‌کند و به صورت async تعریف می‌شود.
+export default async function ExerciseDetailPage({ params }: { params: { id: string } }) { // <--- async را اینجا اضافه کنید
+  // Client Component (ExerciseDetailPageClient) می‌تواند خودش از useParams استفاده کند.
   return <ExerciseDetailPageClient />;
 }
