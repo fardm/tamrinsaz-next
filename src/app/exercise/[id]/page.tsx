@@ -24,7 +24,7 @@ export default function ExerciseDetailPage() {
   const [showEditNotesModal, setShowEditNotesModal] = useState(false);
   const [sessionBeingEdited, setSessionBeingEdited] = useState<string | null>(null);
   const [currentNotes, setCurrentNotes] = useState<string>('');
-  const editNotesModalRef = useRef<HTMLHTMLDivElement>(null);
+  const editNotesModalRef = useRef<HTMLDivElement>(null);
 
   const [userData, setUserData] = useState<UserData>({ sessions: [] });
 
