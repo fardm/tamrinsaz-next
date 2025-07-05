@@ -12,33 +12,26 @@ export function SortPanel({ sortRules, onSortRulesChange }: SortPanelProps) {
   const [isOpen, setIsOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // Local state for sort rules within the modal until applied
   const [tempSortRules, setTempSortRules] = useState<SortRule[]>([]);
-  // State to manage whether each field is enabled for sorting
   const [isNameSortEnabled, setIsNameSortEnabled] = useState(false);
   const [isEquipmentSortEnabled, setIsEquipmentSortEnabled] = useState(false);
   const [isMusclesSortEnabled, setIsMusclesSortEnabled] = useState(false);
 
-  // Load stored sort rules on initial render
   const [storedSortRules, setStoredSortRules] = useLocalStorage<SortRule[]>('tamrinsaz-sort-rules', []);
 
   useEffect(() => {
-    // When component mounts, apply stored sort rules
     if (storedSortRules.length > 0) {
       onSortRulesChange(storedSortRules);
-      // Initialize enabled states based on stored rules
       setIsNameSortEnabled(storedSortRules.some(r => r.field === 'name'));
       setIsEquipmentSortEnabled(storedSortRules.some(r => r.field === 'equipment'));
       setIsMusclesSortEnabled(storedSortRules.some(r => r.field === 'targetMuscles'));
     }
-  }, []);
+  }, [onSortRulesChange, storedSortRules]); // Added missing dependencies
 
   useEffect(() => {
-    // Sync external sortRules prop to stored rules whenever it changes
     setStoredSortRules(sortRules);
   }, [sortRules, setStoredSortRules]);
 
-  // Sync tempSortRules with current global sortRules when modal opens
   useEffect(() => {
     if (isOpen) {
       setTempSortRules(sortRules);
@@ -48,7 +41,6 @@ export function SortPanel({ sortRules, onSortRulesChange }: SortPanelProps) {
     }
   }, [isOpen, sortRules]);
 
-  // Handle click outside and escape key to close modal
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -63,13 +55,13 @@ export function SortPanel({ sortRules, onSortRulesChange }: SortPanelProps) {
     };
 
     if (isOpen) {
-      document.body.style.overflow = 'hidden'; // Disable background scrolling
+      document.body.style.overflow = 'hidden';
       document.addEventListener('keydown', handleEscape);
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
-      document.body.style.overflow = ''; // Re-enable scrolling on cleanup
+      document.body.style.overflow = '';
       document.removeEventListener('keydown', handleEscape);
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -90,13 +82,11 @@ export function SortPanel({ sortRules, onSortRulesChange }: SortPanelProps) {
 
     setTempSortRules(prevRules => {
       if (isChecked) {
-        // Add rule if enabled and not already present
         if (!prevRules.some(r => r.field === field)) {
           const newRule: SortRule = { id: Date.now().toString(), field, direction: 'asc' };
           return [...prevRules, newRule];
         }
       } else {
-        // Remove rule if disabled
         return prevRules.filter(r => r.field !== field);
       }
       return prevRules;
@@ -112,18 +102,16 @@ export function SortPanel({ sortRules, onSortRulesChange }: SortPanelProps) {
   };
 
   const handleApplySort = () => {
-    // Filter out rules that are not enabled
     const appliedSortRules = tempSortRules.filter(rule => {
       if (rule.field === 'name') return isNameSortEnabled;
       if (rule.field === 'equipment') return isEquipmentSortEnabled;
       if (rule.field === 'targetMuscles') return isMusclesSortEnabled;
       return false;
     });
-    // Ensure 'name' is always the primary sort if enabled, then others, for consistent behavior
     const sortedAppliedRules = appliedSortRules.sort((a, b) => {
         if (a.field === 'name' && b.field !== 'name') return -1;
         if (a.field !== 'name' && b.field === 'name') return 1;
-        return 0; // Maintain original order for other fields
+        return 0;
     });
 
     onSortRulesChange(sortedAppliedRules);
@@ -175,10 +163,8 @@ export function SortPanel({ sortRules, onSortRulesChange }: SortPanelProps) {
             </div>
 
             <div className="space-y-6">
-              {/* Name Sort Section */}
               <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                 <div className="flex items-center justify-between w-full">
-                  {/* Checkbox and Title on the right */}
                   <div className="flex items-center space-x-2 space-x-reverse">
                     <input
                       type="checkbox"
@@ -189,7 +175,6 @@ export function SortPanel({ sortRules, onSortRulesChange }: SortPanelProps) {
                     <span className="text-gray-900 dark:text-white font-medium">نام تمرین</span>
                   </div>
 
-                  {/* Icons on the left */}
                   <div className="flex items-center space-x-1 space-x-reverse">
                     <button
                       onClick={() => toggleDirection('name')}
@@ -207,10 +192,8 @@ export function SortPanel({ sortRules, onSortRulesChange }: SortPanelProps) {
                 </div>
               </div>
 
-              {/* Equipment Sort Section */}
               <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                 <div className="flex items-center justify-between w-full">
-                  {/* Checkbox and Title on the right */}
                   <div className="flex items-center space-x-2 space-x-reverse">
                     <input
                       type="checkbox"
@@ -221,7 +204,6 @@ export function SortPanel({ sortRules, onSortRulesChange }: SortPanelProps) {
                     <span className="text-gray-900 dark:text-white font-medium">وسایل</span>
                   </div>
 
-                  {/* Icons on the left */}
                   <div className="flex items-center space-x-1 space-x-reverse">
                     <button
                       onClick={() => toggleDirection('equipment')}
@@ -239,10 +221,8 @@ export function SortPanel({ sortRules, onSortRulesChange }: SortPanelProps) {
                 </div>
               </div>
 
-              {/* Target Muscles Sort Section */}
               <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                 <div className="flex items-center justify-between w-full">
-                  {/* Checkbox and Title on the right */}
                   <div className="flex items-center space-x-2 space-x-reverse">
                     <input
                       type="checkbox"
@@ -253,7 +233,6 @@ export function SortPanel({ sortRules, onSortRulesChange }: SortPanelProps) {
                     <span className="text-gray-900 dark:text-white font-medium">عضلات</span>
                   </div>
 
-                  {/* Icons on the left */}
                   <div className="flex items-center space-x-1 space-x-reverse">
                     <button
                       onClick={() => toggleDirection('targetMuscles')}

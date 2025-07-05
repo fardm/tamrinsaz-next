@@ -2,9 +2,9 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { X, Check, Eraser } from 'lucide-react';
-import { FilterRule } from '../types';
-import { exercisesData } from '../data/exercises'; // مسیر ایمپورت صحیح است: ../data/exercises
+import { X, Check } from 'lucide-react'; // Removed Eraser
+// Removed exercisesData, as it's not directly used in FilterPanel
+// import { exercisesData } from '../data/exercises';
 
 // --- Muscle Options ---
 export interface MuscleOption {

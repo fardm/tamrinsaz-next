@@ -16,7 +16,7 @@ const EXERCISES_PER_PAGE = 20;
 export default function HomePage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useLocalStorage<FilterRule[]>('tamrinsaz-filters', []);
-  const [sortRules, setSortRules] = useState<SortRule[]>([]);
+  const [sortRules, setSortRules] = useState<SortRule[]>([]); // Keep this if SortPanel will be re-added
   const [visibleExerciseCount, setVisibleExerciseCount] = useState(EXERCISES_PER_PAGE);
   const [isLoading, setIsLoading] = useState(false);
   const loaderRef = useRef<HTMLDivElement>(null);
@@ -26,7 +26,7 @@ export default function HomePage() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const [userData, setUserData] = useLocalStorage<UserData>('tamrinsaz-user-data', { sessions: [] });
+  const [userData, setUserData] = useLocalStorage<UserData>('tamrinsaz-user-data', { sessions: [] }); // Keep setUserData as it might be used internally by useLocalStorage
 
   useEffect(() => {
     const filterField = searchParams.get('filterField');
@@ -35,29 +35,22 @@ export default function HomePage() {
     if (filterField && filterValue) {
       const decodedFilterValue = decodeURIComponent(filterValue);
       const newFilter: FilterRule = {
-        id: Date.now().toString(), // ID is not used for comparison, but needed for FilterRule type
+        id: Date.now().toString(),
         field: filterField as 'equipment' | 'targetMuscles',
         values: [decodedFilterValue],
       };
 
-      // Check if this exact filter is already applied
       const isFilterAlreadyApplied = filters.some(
         (f) => f.field === newFilter.field && f.values.includes(decodedFilterValue)
       );
 
-      // Only set filters if the new filter is not already applied
-      // This prevents an infinite loop when `setFilters` causes a re-render
-      // and the URL params are still present.
       if (!isFilterAlreadyApplied) {
         setFilters([newFilter]);
       }
 
-      // Always clear the URL parameters after processing them
-      // This is crucial to prevent the useEffect from re-triggering unnecessarily
-      // on subsequent renders even if the filter state is the same.
       router.replace(pathname);
     }
-  }, [searchParams, setFilters, router, pathname, filters]); // Added 'filters' to dependencies
+  }, [searchParams, setFilters, router, pathname, filters]);
 
   const getSessionName = (exerciseId: string): string | undefined => {
     if (!userData || !userData.sessions) return undefined;
@@ -138,16 +131,17 @@ export default function HomePage() {
       { threshold: 1.0 }
     );
 
-    if (loaderRef.current) {
-      observer.observe(loaderRef.current);
+    const currentLoaderRef = loaderRef.current; // Copy ref value to a variable for cleanup
+    if (currentLoaderRef) {
+      observer.observe(currentLoaderRef);
     }
 
     return () => {
-      if (loaderRef.current) {
-        observer.unobserve(loaderRef.current);
+      if (currentLoaderRef) { // Use the copied variable in cleanup
+        observer.unobserve(currentLoaderRef);
       }
     };
-  }, [hasMoreExercises, isLoading]);
+  }, [hasMoreExercises, isLoading, loaderRef]); // Add loaderRef to dependencies
 
   const hasActiveFilters = filters.some(f => f.values.length > 0);
 

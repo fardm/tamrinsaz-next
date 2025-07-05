@@ -1,15 +1,13 @@
 // src/app/ai-workout-generator/page.tsx
-"use client"; // این خط رو اضافه کنید
+"use client";
 
-import React, { useRef, useState } from 'react'; // useEffect حذف شد چون نیازی نیست
+import React, { useRef, useState } from 'react';
 import { Copy, Bot } from 'lucide-react';
 
-// این کامپوننت صفحه مستقل برای تولید برنامه تمرینی با هوش مصنوعی است.
-export default function AIGenWorkoutPage() { // تغییر: export default function AIGenWorkoutPage()
-  const promptTextRef = useRef<HTMLTextAreaElement>(null); // رفرنس برای دسترسی به محتوای تکست‌آریا
-  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle'); // وضعیت دکمه کپی
+export default function AIGenWorkoutPage() {
+  const promptTextRef = useRef<HTMLTextAreaElement>(null);
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle');
 
-  // متن پرامپت که کاربر می‌تواند آن را کپی کند
   const promptText = `یک برنامه بدنسازی بنویس که شامل ۴ جلسه باشد:
 - جلسه ۱: سینه + جلو بازو
 - جلسه ۲: پشت + لت + ساعد
@@ -48,19 +46,17 @@ export default function AIGenWorkoutPage() { // تغییر: export default funct
 }
 `;
 
-  // مدیریت کپی کردن متن به کلیپ‌بورد
   const handleCopy = () => {
     if (promptTextRef.current) {
       promptTextRef.current.select();
-      document.execCommand('copy'); // استفاده از execCommand برای سازگاری بیشتر در محیط‌های مختلف
-      setCopyStatus('copied'); // تغییر وضعیت دکمه به "کپی شد!"
-      setTimeout(() => setCopyStatus('idle'), 2000); // بازگشت به حالت اولیه پس از 2 ثانیه
+      document.execCommand('copy');
+      setCopyStatus('copied');
+      setTimeout(() => setCopyStatus('idle'), 2000);
     }
   };
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* عنوان صفحه */}
       <div className="mb-8 flex items-center space-x-3 space-x-reverse">
         <Bot className="h-7 w-7 text-gray-700 dark:text-gray-300" />
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -68,10 +64,9 @@ export default function AIGenWorkoutPage() { // تغییر: export default funct
         </h1>
       </div>
 
-      {/* بخش توضیحات و پرامپت */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 flex flex-col">
         <p className="text-gray-600 dark:text-gray-400 mb-4 text-right leading-relaxed">
-          برای ساخت برنامه می‌توانید از هوش مصنوعی کمک بگیرید. با دستور زیر یک کد JSON دریافت می‌کنید که از بخش "وارد کردن برنامه" می‌توانید آن را به سایت اضافه کنید.
+          برای ساخت برنامه می‌توانید از هوش مصنوعی کمک بگیرید. با دستور زیر یک کد JSON دریافت می‌کنید که از بخش &quot;وارد کردن برنامه&quot; می‌توانید آن را به سایت اضافه کنید.
         </p>
         <p className="text-gray-600 dark:text-gray-400 mb-4 text-right leading-relaxed">
           1. یکی از سرویس‌های هوش مصنوعی را باز کنید. مدل‌هایی مثل ChatGPT و Gemini در این زمینه عملکرد خوبی دارند.</p>
@@ -82,14 +77,13 @@ export default function AIGenWorkoutPage() { // تغییر: export default funct
           3. سپس از پرامپت زیر استفاده کنید:
         </p>
 
-        {/* کادر پرامپت با قابلیت اسکرول و دکمه کپی */}
         <div className="relative flex-grow rounded-lg bg-gray-100 dark:bg-gray-700 p-4 mb-4">
           <textarea
             ref={promptTextRef}
             readOnly
             value={promptText}
             className="w-full h-full bg-transparent text-gray-900 dark:text-white text-sm leading-relaxed resize-none outline-none border-none overflow-auto pr-10"
-            style={{ minHeight: '200px', maxHeight: 'calc(90vh - 300px)' }} // ارتفاع ثابت برای تکست‌آریا با اسکرول
+            style={{ minHeight: '200px', maxHeight: 'calc(90vh - 300px)' }}
           />
           <button
             onClick={handleCopy}

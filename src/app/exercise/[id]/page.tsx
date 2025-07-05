@@ -1,18 +1,15 @@
 // src/app/exercise/[id]/page.tsx
 // دستور "use client"; از این فایل حذف می‌شود تا به یک Server Component تبدیل شود.
 
-import { exercisesData } from '../../../data/exercises'; // مطمئن شوید مسیر صحیح است
-import ExerciseDetailPageClient from './ExerciseDetailPageClient'; // ایمپورت کامپوننت Client
+import { exercisesData } from '../../../data/exercises';
+import ExerciseDetailPageClient from './ExerciseDetailPageClient';
 
-// تابع generateStaticParams() در Server Component باقی می‌ماند
 export async function generateStaticParams() {
   return exercisesData.map((exercise) => ({
     id: exercise.id,
   }));
 }
 
-// این تابع به عنوان Server Component عمل می‌کند و به صورت async تعریف می‌شود.
-export default async function ExerciseDetailPage({ params }: { params: { id: string } }) { // <--- async را اینجا اضافه کنید
-  // Client Component (ExerciseDetailPageClient) می‌تواند خودش از useParams استفاده کند.
+export default async function ExerciseDetailPage() { // Removed '{ params }: { params: { id: string } }'
   return <ExerciseDetailPageClient />;
 }

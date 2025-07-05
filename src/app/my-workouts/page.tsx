@@ -4,8 +4,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-// 'Check' و 'X' از اینجا حذف شدند، چون در این فایل مستقیماً استفاده نمی‌شوند
-// 'getUserData' نیز حذف شد، زیرا useLocalStorage آن را داخلی مدیریت می‌کند
+// Removed Check, X, and getUserData from lucide-react and utils/storage
 import { Plus, PanelRightOpen, PanelRightClose, Download, Upload, Trash2, HelpCircle, Bot } from 'lucide-react';
 import { SessionCard } from '../../components/SessionCard';
 import { exercisesData } from '../../data/exercises';
@@ -14,20 +13,19 @@ import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { NewSessionModal } from '../../components/NewSessionModal';
 import { ImportProgramModal } from '../../components/ImportProgramModal';
 import { ExportProgramModal } from '../../components/ExportProgramModal';
-import { getUserData, saveUserData, clearUserData } from '../../utils/storage'; // 'getUserData' از این خط حذف شد
+import { saveUserData, clearUserData } from '../../utils/storage'; // Removed getUserData
 
 export default function MyWorkoutsPage() {
   const router = useRouter();
-  const [userData, setUserData] = useLocalStorage<UserData>('tamrinsaz-user-data', { sessions: [] }); // استفاده از useLocalStorage
+  const [userData, setUserData] = useLocalStorage<UserData>('tamrinsaz-user-data', { sessions: [] });
   const [activeTab, setActiveTab] = useLocalStorage<string>('workout-active-tab', 'all');
 
-  // تغییر: مقداردهی اولیه isSidebarOpen به false و استفاده از useEffect برای تشخیص اندازه صفحه
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   useEffect(() => {
     if (typeof window !== 'undefined') {
       setIsSidebarOpen(window.matchMedia('(min-width: 768px)').matches);
     }
-  }, []); // فقط یک بار در mount کلاینت اجرا شود
+  }, []);
 
   const sidebarRef = useRef<HTMLDivElement>(null);
 
@@ -46,11 +44,6 @@ export default function MyWorkoutsPage() {
     saveUserData(newData);
     setUserData(newData);
   };
-
-  // useEffect برای setUserData(getUserData()) دیگر نیاز نیست، زیرا useLocalStorage این کار را انجام می‌دهد.
-  // useEffect(() => {
-  //   setUserData(getUserData());
-  // }, []);
 
   const isMobile = () => typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
 
@@ -211,7 +204,6 @@ export default function MyWorkoutsPage() {
 
   return (
     <div className="relative min-h-screen flex flex-col md:flex-row">
-      {/* دکمه شناور برای باز کردن سایدبار در موبایل */}
       {!isSidebarOpen && (
         <button
           onClick={() => setIsSidebarOpen(true)}
@@ -222,7 +214,6 @@ export default function MyWorkoutsPage() {
         </button>
       )}
 
-      {/* دکمه شناور برای باز کردن سایدبار در دسکتاپ */}
       {!isSidebarOpen && (
         <button
           onClick={() => setIsSidebarOpen(true)}
@@ -233,7 +224,6 @@ export default function MyWorkoutsPage() {
         </button>
       )}
 
-      {/* بک‌دراپ موبایل (فقط در موبایل و زمانی که سایدبار باز است) */}
       {isSidebarOpen && isMobile() && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -241,7 +231,6 @@ export default function MyWorkoutsPage() {
         ></div>
       )}
 
-      {/* سایدبار */}
       <div
         ref={sidebarRef}
         className={`fixed top-0 bottom-0 right-0 w-64 h-full bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 shadow-lg z-50 p-4 flex flex-col transition-transform duration-300 ease-in-out
@@ -249,7 +238,6 @@ export default function MyWorkoutsPage() {
           md:top-0 md:h-full md:w-64 md:${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <div className="flex justify-end items-center mb-6">
-          {/* دکمه بستن موبایل (مخفی در دسکتاپ) */}
           <button
             onClick={() => setIsSidebarOpen(false)}
             className="md:hidden text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
@@ -257,7 +245,6 @@ export default function MyWorkoutsPage() {
           >
             <PanelRightClose className="h-6 w-6" />
           </button>
-          {/* دکمه بستن دسکتاپ (مخفی در موبایل) */}
           <button
             onClick={() => setIsSidebarOpen(false)}
             className="hidden md:block text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
