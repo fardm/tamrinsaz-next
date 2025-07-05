@@ -307,7 +307,7 @@ export function FilterPanel({ isOpen, onClose, currentFilters, onApplyFilters }:
                 >
                   {/* استفاده از کامپوننت Image از next/image */}
                   {/* تغییر ابعاد کانتینر تصویر برای ریسپانسیو بودن */}
-                  <div className="relative w-full max-w-[80px] aspect-square mb-2 rounded-lg bg-gray-200 dark:bg-gray-600 p-1">
+                  <div className="relative w-full max-w-[80px] aspect-square mb-2 rounded-lg bg-gray-200 dark:bg-gray-600 p-1 overflow-hidden">
                     <Image
                       src={getImageUrl(muscle.imageName)}
                       alt={muscle.displayName}
@@ -346,7 +346,7 @@ export function FilterPanel({ isOpen, onClose, currentFilters, onApplyFilters }:
                 >
                   {/* استفاده از کامپوننت Image از next/image */}
                   {/* تغییر ابعاد کانتینر تصویر برای ریسپانسیو بودن */}
-                  <div className="relative w-full max-w-[80px] aspect-square mb-2 rounded-lg bg-gray-200 dark:bg-gray-600 p-1">
+                  <div className="relative w-full max-w-[80px] aspect-square mb-2 rounded-lg bg-gray-200 dark:bg-gray-600 p-1 overflow-hidden">
                     <Image
                       src={getImageUrl(equipment.imageName)}
                       alt={equipment.displayName}

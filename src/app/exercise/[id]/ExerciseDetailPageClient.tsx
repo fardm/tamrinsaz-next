@@ -13,6 +13,7 @@ import { UserData, WorkoutSession, SessionExercise } from '../../../types';
 import { ImageTextDisplay } from '../../../components/ImageTextDisplay';
 import { muscleOptions, equipmentOptionsList } from '../../../components/FilterPanel';
 import { getUserData, saveUserData } from '../../../utils/storage';
+// import type { Metadata } from 'next'; // این ایمپورت حذف شد زیرا در Client Component استفاده نمی‌شود
 
 // تعریف defaultImage و getImageUrl در خارج از کامپوننت
 const defaultImage = 'https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=800';
@@ -251,7 +252,7 @@ export default function ExerciseDetailPageClient() {
   return (
     <div className="max-w-[35rem] mx-auto px-2 sm:px-6 lg:px-8 py-6">
       <div className="overflow-hidden">
-        {/* اضافه کردن 'relative' به والد Image برای کارکرد صحیح 'fill' */}
+        {/* اضافه کردن 'priority' به کامپوننت Image برای بهبود LCP */}
         <div className="relative aspect-video flex items-center justify-center bg-white dark:bg-white rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden mb-4">
           <Image
             src={getImageUrl(exercise.image)}
@@ -259,6 +260,7 @@ export default function ExerciseDetailPageClient() {
             fill
             sizes="(max-width: 768px) 100vw, 35rem"
             style={{ objectFit: 'contain' }}
+            priority // اضافه کردن پراپرتی priority
           />
         </div>
 

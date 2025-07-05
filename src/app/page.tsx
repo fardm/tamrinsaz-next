@@ -1,7 +1,7 @@
 // src/app/page.tsx
-"use client";
+"use client"; // این خط برای استفاده از هوک‌های React ضروری است
 
-import React, { useState, useMemo, useEffect, useRef, Suspense } from 'react';
+import React, { useState, useMemo, useEffect, useRef, Suspense, useCallback } from 'react';
 import { SearchBar } from '../components/SearchBar';
 import { ExerciseGrid } from '../components/ExerciseGrid';
 import { exercisesData } from '../data/exercises';
@@ -10,6 +10,7 @@ import { Filter } from 'lucide-react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { FilterPanel } from '../components/FilterPanel';
+// import { SortPanel } from '../components/SortPanel'; // ایمپورت SortPanel حذف شده است
 
 const EXERCISES_PER_PAGE = 20;
 
@@ -37,11 +38,13 @@ const HomePageSearchParamHandler = ({ setFilters, filters, router, pathname }: {
         (f) => f.field === newFilter.field && f.values.includes(decodedFilterValue)
       );
 
+      // اگر فیلتر قبلاً اعمال نشده باشد، آن را اضافه کن
       if (!isFilterAlreadyApplied) {
-        setFilters([newFilter]);
+        setFilters([newFilter]); 
       }
 
-      router.replace(pathname);
+      // حذف پارامترهای URL پس از اعمال فیلتر
+      router.replace(pathname); 
     }
   }, [searchParams, setFilters, router, pathname, filters]);
   return null;
@@ -50,10 +53,8 @@ const HomePageSearchParamHandler = ({ setFilters, filters, router, pathname }: {
 
 export default function HomePage() {
   const [searchTerm, setSearchTerm] = useState('');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [filters, setFilters] = useLocalStorage<FilterRule[]>('tamrinsaz-filters', []);
-  // 'setSortRules' را کامنت می‌کنیم چون SortPanel در حال حاضر استفاده نمی‌شود.
-  // اگر قصد دارید SortPanel را دوباره اضافه کنید، باید این خط را فعال کنید.
-  // const [sortRules, setSortRules] = useState<SortRule[]>([]); 
   const [visibleExerciseCount, setVisibleExerciseCount] = useState(EXERCISES_PER_PAGE);
   const [isLoading, setIsLoading] = useState(false);
   const loaderRef = useRef<HTMLDivElement>(null);
@@ -62,11 +63,11 @@ export default function HomePage() {
   const router = useRouter();
   const pathname = usePathname();
 
-  // هشدار 'setUserData' را با کامنت ESLint غیرفعال می‌کنیم، زیرا این متغیر توسط هوک useLocalStorage استفاده می‌شود.
-  const [userData, setUserData] = useLocalStorage<UserData>('tamrinsaz-user-data', { sessions: [] }); // eslint-disable-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [userData, setUserData] = useLocalStorage<UserData>('tamrinsaz-user-data', { sessions: [] });
 
-  // تابع getSessionName به اینجا بازگردانده شد
-  const getSessionName = (exerciseId: string): string | undefined => {
+  // تابع getSessionName به عنوان useCallback برای بهینه‌سازی
+  const getSessionName = useCallback((exerciseId: string): string | undefined => {
     if (!userData || !userData.sessions) return undefined;
     for (const session of userData.sessions) {
       if (session.exercises.some(ex => ex.exerciseId === exerciseId)) {
@@ -74,7 +75,7 @@ export default function HomePage() {
       }
     }
     return undefined;
-  };
+  }, [userData]); 
 
   const filteredAndSortedExercises = useMemo(() => {
     let result = [...exercisesData];
@@ -102,32 +103,13 @@ export default function HomePage() {
       }
     });
 
-    // اگر SortPanel کامنت شده است، این بخش نیز باید غیرفعال شود.
-    // if (sortRules.length > 0) {
-    //   result.sort((a, b) => {
-    //     for (const rule of sortRules) {
-    //       let comparison = 0;
-            
-    //       if (rule.field === 'name') {
-    //         comparison = a.name.localeCompare(b.name, 'fa');
-    //       } else if (rule.field === 'equipment') {
-    //         comparison = a.equipment.localeCompare(b.equipment, 'fa');
-    //       } else if (rule.field === 'targetMuscles') {
-    //         comparison = a.targetMuscles[0]?.localeCompare(b.targetMuscles[0] || '', 'fa') || 0;
-    //       }
+    // در این نسخه، مرتب‌سازی خاصی اعمال نمی‌شود
+    // اگر نیاز به مرتب‌سازی پیش‌فرض دارید (مثلاً بر اساس نام)، می‌توانید اینجا اضافه کنید
+    result.sort((a, b) => a.name.localeCompare(b.name, 'fa', { sensitivity: 'base' }));
 
-    //       if (comparison !== 0) {
-    //         return rule.direction === 'desc' ? -comparison : comparison;
-    //       }
-    //     }
-    //     return 0;
-    //   });
-    // }
-
-    setVisibleExerciseCount(EXERCISES_PER_PAGE);
 
     return result;
-  }, [searchTerm, filters]); // sortRules از وابستگی‌ها حذف شد
+  }, [searchTerm, filters]); 
   
   const exercisesToShow = filteredAndSortedExercises.slice(0, visibleExerciseCount);
   const hasMoreExercises = filteredAndSortedExercises.length > exercisesToShow.length;
@@ -146,17 +128,17 @@ export default function HomePage() {
       { threshold: 1.0 }
     );
 
-    const currentLoaderRef = loaderRef.current; // Copy ref value to a variable for cleanup
+    const currentLoaderRef = loaderRef.current;
     if (currentLoaderRef) {
       observer.observe(currentLoaderRef);
     }
 
     return () => {
-      if (currentLoaderRef) { // Use the copied variable in cleanup
+      if (currentLoaderRef) {
         observer.unobserve(currentLoaderRef);
       }
     };
-  }, [hasMoreExercises, isLoading, loaderRef]); // Add loaderRef to dependencies
+  }, [hasMoreExercises, isLoading, loaderRef, setVisibleExerciseCount]);
 
   const hasActiveFilters = filters.some(f => f.values.length > 0);
 
@@ -204,11 +186,6 @@ export default function HomePage() {
             </span>
           )}
         </button>
-
-        {/* <SortPanel
-          sortRules={sortRules}
-          onSortRulesChange={setSortRules}
-        /> */}
       </div>
 
       <ExerciseGrid

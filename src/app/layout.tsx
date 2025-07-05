@@ -1,24 +1,27 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
-import "./globals.css"; // import استایل‌های عمومی
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "تمرین‌ساز - برنامه تمرینی شخصی شما",
-  description: "با تمرین‌ساز، برنامه‌های تمرینی شخصی‌سازی شده خود را بسازید، مدیریت کنید و بهینه‌سازی کنید. شامل تمرینات متنوع و ابزارهای هوش مصنوعی.",
-  keywords: ["تمرین‌ساز", "برنامه بدنسازی", "تمرینات ورزشی", "هوش مصنوعی", "فیتنس", "ورزش", "باشگاه"],
+  title: "تمرین‌ساز - برنامه‌ساز ورزشی و تمرینات بدنسازی",
+  description: "با تمرین‌ساز، برنامه ورزشی خود را بسازید و به مجموعه کاملی از تمرینات بدنسازی دسترسی داشته باشید. شامل عضلات درگیر، وسایل مورد نیاز و توضیحات کامل.",
+  keywords: ["تمرین‌ساز", "برنامه ورزشی", "بدنسازی", "تمرینات", "فیتنس", "عضلات", "باشگاه", "ورزش"],
   openGraph: {
-    title: "تمرین‌ساز - برنامه تمرینی شخصی شما",
-    description: "با تمرین‌ساز، برنامه‌های تمرینی شخصی‌سازی شده خود را بسازید، مدیریت کنید و بهینه‌سازی کنید. شامل تمرینات متنوع و ابزارهای هوش مصنوعی.",
-    url: "https://tamrinsaz.ir", // آدرس سایت خود را اینجا قرار دهید
-    siteName: "TamrinSaz",
+    title: "تمرین‌ساز - برنامه‌ساز ورزشی و تمرینات بدنسازی",
+    description: "با تمرین‌ساز، برنامه ورزشی خود را بسازید و به مجموعه کاملی از تمرینات بدنسازی دسترسی داشته باشید.",
+    url: "https://app.tamrinsaz.ir",
+    siteName: "تمرین‌ساز",
     images: [
       {
-        url: "https://tamrinsaz.ir/og-image.jpg", // تصویر Open Graph برای اشتراک‌گذاری در شبکه‌های اجتماعی
+        url: "https://app.tamrinsaz.ir/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "TamrinSaz - Your Personal Workout Planner",
+        alt: "تمرین‌ساز - برنامه ورزشی",
       },
     ],
     locale: "fa_IR",
@@ -26,33 +29,19 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "تمرین‌ساز - برنامه تمرینی شخصی شما",
-    description: "با تمرین‌ساز، برنامه‌های تمرینی شخصی‌سازی شده خود را بسازید، مدیریت کنید و بهینه‌سازی کنید. شامل تمرینات متنوع و ابزارهای هوش مصنوعی.",
-    creator: "@yourtwitterhandle", // اگر حساب توییتر دارید
-    images: ["https://tamrinsaz.ir/og-image.jpg"],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    nocache: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      noimageindex: true,
-      'max-snippet': -1,
-      'max-image-preview': 'large',
-      'max-video-preview': -1,
-    },
-  },
-  icons: { // <--- این پراپرتی 'icons' را اضافه کنید
-    icon: '/favicon.svg', // مسیر فاوآیکون SVG شما در پوشه public
+    title: "تمرین‌ساز - برنامه‌ساز ورزشی و تمرینات بدنسازی",
+    description: "با تمرین‌ساز، برنامه ورزشی خود را بسازید و به مجموعه کاملی از تمرینات بدنسازی دسترسی داشته باشید.",
+    images: ["https://app.tamrinsaz.ir/twitter-image.jpg"],
   },
   other: {
-    "charset": "UTF-8",
-    "viewport": "width=device-width, initial-scale=1.0",
-    "dir": "rtl",
-    "lang": "fa"
-  }
+    "dc.language": "fa",
+    "og:locale:alternate": "fa_IR",
+  },
+  icons: { // اضافه کردن آیکون‌ها برای فاوآیکون
+    icon: '/favicon.svg', // مسیردهی به فایل فاوآیکون در پوشه public
+    // shortcut: '/favicon-16x16.png', // می‌توانید سایزهای مختلف را اضافه کنید
+    // apple: '/apple-touch-icon.png', // برای دستگاه‌های اپل
+  },
 };
 
 export default function RootLayout({
@@ -61,16 +50,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl">
-      <body>
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
-          <Header />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
-        </div>
-      </body>
-    </html>
+    // حذف فضای خالی بین تگ <html> و <body>
+    <html lang="fa" dir="rtl"><body className={`${inter.className} bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white flex flex-col min-h-screen`}>
+      <Header />
+      <main className="flex-grow container mx-auto p-4">
+        {children}
+      </main>
+      <Footer />
+    </body></html>
   );
 }
