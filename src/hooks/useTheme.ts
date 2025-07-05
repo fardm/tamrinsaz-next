@@ -1,30 +1,42 @@
 // src/hooks/useTheme.ts
-"use client"; // این خط رو اضافه کنید
-
 import { useState, useEffect } from 'react';
 
-export function useTheme() {
-  const [isDark, setIsDark] = useState(() => {
-    // اطمینان از اجرای کد فقط در سمت کلاینت
-    if (typeof window === 'undefined') {
-      return false; // یا مقدار پیش‌فرض دیگری برای سرور
-    }
-    const saved = localStorage.getItem('theme');
-    return saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-  });
+type Theme = 'light' | 'dark';
 
+export const useTheme = () => {
+  // مقدار اولیه تم را null قرار می‌دهیم تا در رندر اولیه سمت سرور،
+  // هیچ تمی از localStorage بارگذاری نشود و از Hydration Mismatch جلوگیری شود.
+  const [theme, setTheme] = useState<Theme | null>(null);
+
+  // useEffect برای بارگذاری تم از localStorage فقط در سمت کلاینت
   useEffect(() => {
-    // اطمینان از اجرای کد فقط در سمت کلاینت
-    if (typeof window === 'undefined') {
-      return;
-    }
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    if (isDark) {
-      document.documentElement.classList.add('dark');
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme === 'light' || storedTheme === 'dark') {
+      setTheme(storedTheme);
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setTheme('dark');
     } else {
-      document.documentElement.classList.remove('dark');
+      setTheme('light');
     }
-  }, [isDark]);
+  }, []); // این useEffect فقط یک بار در زمان mount کامپوننت اجرا می‌شود
 
-  return { isDark, toggleTheme: () => setIsDark(!isDark) };
-}
+  // useEffect برای اعمال کلاس 'dark' یا 'light' به تگ <html>
+  useEffect(() => {
+    if (theme !== null) { // فقط زمانی که تم واقعی از localStorage بارگذاری شد
+      const root = window.document.documentElement;
+      // ابتدا کلاس‌های قبلی را حذف می‌کنیم تا از تداخل جلوگیری شود
+      root.classList.remove('light', 'dark'); 
+      root.classList.add(theme);
+      localStorage.setItem('theme', theme);
+    }
+  }, [theme]); // هر زمان که theme تغییر کرد، این useEffect اجرا می‌شود
+
+  const toggleTheme = () => {
+    setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
+  };
+
+  // تا زمانی که تم از localStorage بارگذاری نشده، یک تم پیش‌فرض (مثلاً 'light') برگردانده شود
+  // یا می‌توانید null برگردانید و UI را بر اساس آن مدیریت کنید.
+  // برای جلوگیری از مشکلات رندرینگ، بهتر است یک مقدار پیش‌فرض معقول داشته باشیم.
+  return { isDark: theme === 'dark', toggleTheme, theme };
+};

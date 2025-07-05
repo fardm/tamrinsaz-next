@@ -53,7 +53,6 @@ const HomePageSearchParamHandler = ({ setFilters, filters, router, pathname }: {
 
 export default function HomePage() {
   const [searchTerm, setSearchTerm] = useState('');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [filters, setFilters] = useLocalStorage<FilterRule[]>('tamrinsaz-filters', []);
   const [visibleExerciseCount, setVisibleExerciseCount] = useState(EXERCISES_PER_PAGE);
   const [isLoading, setIsLoading] = useState(false);

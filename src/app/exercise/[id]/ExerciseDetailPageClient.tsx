@@ -2,7 +2,7 @@
 "use client"; // این خط این فایل را به یک Client Component تبدیل می‌کند.
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useParams } from 'next/navigation';
+// import { useParams } from 'next/navigation'; // useParams حذف شد
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -13,7 +13,6 @@ import { UserData, WorkoutSession, SessionExercise } from '../../../types';
 import { ImageTextDisplay } from '../../../components/ImageTextDisplay';
 import { muscleOptions, equipmentOptionsList } from '../../../components/FilterPanel';
 import { getUserData, saveUserData } from '../../../utils/storage';
-// import type { Metadata } from 'next'; // این ایمپورت حذف شد زیرا در Client Component استفاده نمی‌شود
 
 // تعریف defaultImage و getImageUrl در خارج از کامپوننت
 const defaultImage = 'https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=800';
@@ -29,8 +28,9 @@ const getImageUrl = (imageName: string | undefined) => {
   return defaultImage;
 };
 
-export default function ExerciseDetailPageClient() {
-  const { id } = useParams<{ id: string }>();
+// ExerciseDetailPageClient اکنون id را به عنوان prop دریافت می‌کند
+export default function ExerciseDetailPageClient({ id }: { id: string }) {
+  // const { id } = useParams<{ id: string }>(); // این خط حذف شد
   const router = useRouter();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -109,7 +109,7 @@ export default function ExerciseDetailPageClient() {
     };
   }, [showAddModal, showDeleteModal, showEditNotesModal, handleCancelEditNotes]);
 
-  const exercise = exercisesData.find(ex => ex.id === id);
+  const exercise = exercisesData.find(ex => ex.id === id); // استفاده از id که به عنوان prop دریافت شده
 
   if (!exercise) {
     return (

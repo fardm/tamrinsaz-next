@@ -3,14 +3,13 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation'; // Removed useRouter
+import { usePathname } from 'next/navigation';
 import { Moon, Sun, Menu, Bot, ClipboardList, X, Github, Send } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
-// Removed UserData, as it's not directly used in Header
-// import { UserData } from '../types';
 
 export function Header() {
-  const { isDark, toggleTheme } = useTheme();
+  // استفاده از isDark که توسط useTheme جدید برگردانده می‌شود
+  const { isDark, toggleTheme } = useTheme(); 
   const pathname = usePathname();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
