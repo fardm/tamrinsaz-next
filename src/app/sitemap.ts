@@ -5,7 +5,7 @@ import { exercisesData } from '@/data/exercises'; // مطمئن شوید مسی�
 export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://tamrinsaz.ir'; // آدرس اصلی سایت شما
+  const baseUrl = 'https://app.tamrinsaz.ir'; // آدرس اصلی سایت شما
 
   const exerciseUrls = exercisesData.map(exercise => ({
     url: `${baseUrl}/exercise/${exercise.id}`,
