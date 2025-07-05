@@ -306,7 +306,8 @@ export function FilterPanel({ isOpen, onClose, currentFilters, onApplyFilters }:
                   onClick={() => toggleMuscleSelection(muscle.id)}
                 >
                   {/* استفاده از کامپوننت Image از next/image */}
-                  <div className="relative w-20 h-20 mb-2 rounded-lg bg-gray-200 dark:bg-gray-600 p-1">
+                  {/* تغییر ابعاد کانتینر تصویر برای ریسپانسیو بودن */}
+                  <div className="relative w-full max-w-[80px] aspect-square mb-2 rounded-lg bg-gray-200 dark:bg-gray-600 p-1">
                     <Image
                       src={getImageUrl(muscle.imageName)}
                       alt={muscle.displayName}
@@ -344,7 +345,8 @@ export function FilterPanel({ isOpen, onClose, currentFilters, onApplyFilters }:
                   onClick={() => toggleEquipmentSelection(equipment.id)}
                 >
                   {/* استفاده از کامپوننت Image از next/image */}
-                  <div className="relative w-20 h-20 mb-2 rounded-lg bg-gray-200 dark:bg-gray-600 p-1">
+                  {/* تغییر ابعاد کانتینر تصویر برای ریسپانسیو بودن */}
+                  <div className="relative w-full max-w-[80px] aspect-square mb-2 rounded-lg bg-gray-200 dark:bg-gray-600 p-1">
                     <Image
                       src={getImageUrl(equipment.imageName)}
                       alt={equipment.displayName}

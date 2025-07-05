@@ -37,7 +37,7 @@ export function ImageTextDisplay({ text, imageName, altText, onClick, filterValu
       onClick={handleClick}
     >
       {/* استفاده از کامپوننت Image از next/image */}
-      <div className="relative w-16 h-16 mb-1 rounded-lg bg-gray-200 dark:bg-gray-600 p-1">
+      <div className="relative w-16 h-16 mb-1 rounded-lg bg-gray-200 dark:bg-gray-600 p-1 overflow-hidden">
         <Image
           src={getImageUrl(imageName)}
           alt={altText}

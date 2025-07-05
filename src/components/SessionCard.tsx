@@ -278,7 +278,7 @@ export function SessionCard({
                 <X className="h-4 w-4" />
               </button>
 
-              <div className="relative w-12 h-12 flex-shrink-0 rounded-lg">
+              <div className="relative w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden">
                 <Image
                   src={getImageUrl(exercise.image)}
                   alt={exercise.name}
