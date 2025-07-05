@@ -1,10 +1,9 @@
 // src/app/my-workouts/page.tsx
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-// Removed Check, X, and getUserData from lucide-react and utils/storage
 import { Plus, PanelRightOpen, PanelRightClose, Download, Upload, Trash2, HelpCircle, Bot } from 'lucide-react';
 import { SessionCard } from '../../components/SessionCard';
 import { exercisesData } from '../../data/exercises';
@@ -13,8 +12,28 @@ import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { NewSessionModal } from '../../components/NewSessionModal';
 import { ImportProgramModal } from '../../components/ImportProgramModal';
 import { ExportProgramModal } from '../../components/ExportProgramModal';
-import { saveUserData, clearUserData } from '../../utils/storage'; // Removed getUserData
+import { saveUserData, clearUserData } from '../../utils/storage';
 
+// کامپوننت جداگانه برای منطق useSearchParams
+const MyWorkoutsSearchParamHandler = ({ activeTab, setActiveTab, router }: {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+  router: ReturnType<typeof useRouter>;
+}) => {
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const filterSessionIdFromUrl = searchParams.get('sessionId');
+    if (filterSessionIdFromUrl) {
+      if (activeTab !== filterSessionIdFromUrl) {
+        setActiveTab(filterSessionIdFromUrl);
+      }
+      router.replace('/my-workouts');
+    }
+  }, [searchParams, activeTab, setActiveTab, router]);
+  return null; // این کامپوننت چیزی رندر نمی‌کند
+};
+
+// کامپوننت اصلی صفحه MyWorkoutsPage
 export default function MyWorkoutsPage() {
   const router = useRouter();
   const [userData, setUserData] = useLocalStorage<UserData>('tamrinsaz-user-data', { sessions: [] });
@@ -46,17 +65,6 @@ export default function MyWorkoutsPage() {
   };
 
   const isMobile = () => typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
-
-  const searchParams = useSearchParams();
-  useEffect(() => {
-    const filterSessionIdFromUrl = searchParams.get('sessionId');
-    if (filterSessionIdFromUrl) {
-      if (activeTab !== filterSessionIdFromUrl) {
-        setActiveTab(filterSessionIdFromUrl);
-      }
-      router.replace('/my-workouts');
-    }
-  }, [searchParams, activeTab, setActiveTab, router]);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -204,6 +212,15 @@ export default function MyWorkoutsPage() {
 
   return (
     <div className="relative min-h-screen flex flex-col md:flex-row">
+      {/* Suspense Boundary برای MyWorkoutsSearchParamHandler */}
+      <Suspense fallback={null}>
+        <MyWorkoutsSearchParamHandler
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          router={router}
+        />
+      </Suspense>
+
       {!isSidebarOpen && (
         <button
           onClick={() => setIsSidebarOpen(true)}

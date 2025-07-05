@@ -1,13 +1,16 @@
 import { MetadataRoute } from 'next'
 import { exercisesData } from '@/data/exercises'; // مطمئن شوید مسیر صحیح است
 
+// اضافه کردن این خط برای اطمینان از تولید استاتیک در حالت 'output: export'
+export const dynamic = 'force-static';
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://tamrinsaz.ir'; // آدرس اصلی سایت شما
 
   const exerciseUrls = exercisesData.map(exercise => ({
     url: `${baseUrl}/exercise/${exercise.id}`,
     lastModified: new Date(), // تاریخ آخرین تغییر، می‌توانید منطق دقیق‌تری داشته باشید
-    changeFrequency: 'weekly' as const, // <--- این خط اصلاح شد
+    changeFrequency: 'weekly' as const,
     priority: 0.7,
   }));
 

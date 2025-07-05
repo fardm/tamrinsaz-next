@@ -1,12 +1,11 @@
 // src/app/page.tsx
 "use client";
 
-import React, { useState, useMemo, useEffect, useRef } from 'react';
-import Image from 'next/image'; // اضافه کردن ایمپورت Image
+import React, { useState, useMemo, useEffect, useRef, Suspense } from 'react';
 import { SearchBar } from '../components/SearchBar';
 import { ExerciseGrid } from '../components/ExerciseGrid';
 import { exercisesData } from '../data/exercises';
-import { FilterRule, SortRule, UserData } from '../types';
+import { FilterRule, UserData } from '../types';
 import { Filter } from 'lucide-react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
@@ -14,24 +13,14 @@ import { FilterPanel } from '../components/FilterPanel';
 
 const EXERCISES_PER_PAGE = 20;
 
-export default function HomePage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filters, setFilters] = useLocalStorage<FilterRule[]>('tamrinsaz-filters', []);
-  // 'setSortRules' را کامنت می‌کنیم چون SortPanel در حال حاضر استفاده نمی‌شود.
-  // اگر قصد دارید SortPanel را دوباره اضافه کنید، باید این خط را فعال کنید.
-  // const [sortRules, setSortRules] = useState<SortRule[]>([]); 
-  const [visibleExerciseCount, setVisibleExerciseCount] = useState(EXERCISES_PER_PAGE);
-  const [isLoading, setIsLoading] = useState(false);
-  const loaderRef = useRef<HTMLDivElement>(null);
-
-  const [showFilterModal, setShowFilterModal] = useState(false);
+// کامپوننت جداگانه برای مدیریت useSearchParams در صفحه اصلی
+const HomePageSearchParamHandler = ({ setFilters, filters, router, pathname }: {
+  setFilters: (filters: FilterRule[]) => void;
+  filters: FilterRule[];
+  router: ReturnType<typeof useRouter>;
+  pathname: string;
+}) => {
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
-
-  // هشدار 'setUserData' را با کامنت ESLint غیرفعال می‌کنیم، زیرا این متغیر توسط هوک useLocalStorage استفاده می‌شود.
-  const [userData, setUserData] = useLocalStorage<UserData>('tamrinsaz-user-data', { sessions: [] }); // eslint-disable-line @typescript-eslint/no-unused-vars
-
   useEffect(() => {
     const filterField = searchParams.get('filterField');
     const filterValue = searchParams.get('filterValue');
@@ -55,7 +44,28 @@ export default function HomePage() {
       router.replace(pathname);
     }
   }, [searchParams, setFilters, router, pathname, filters]);
+  return null;
+};
 
+
+export default function HomePage() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filters, setFilters] = useLocalStorage<FilterRule[]>('tamrinsaz-filters', []);
+  // 'setSortRules' را کامنت می‌کنیم چون SortPanel در حال حاضر استفاده نمی‌شود.
+  // اگر قصد دارید SortPanel را دوباره اضافه کنید، باید این خط را فعال کنید.
+  // const [sortRules, setSortRules] = useState<SortRule[]>([]); 
+  const [visibleExerciseCount, setVisibleExerciseCount] = useState(EXERCISES_PER_PAGE);
+  const [isLoading, setIsLoading] = useState(false);
+  const loaderRef = useRef<HTMLDivElement>(null);
+
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // هشدار 'setUserData' را با کامنت ESLint غیرفعال می‌کنیم، زیرا این متغیر توسط هوک useLocalStorage استفاده می‌شود.
+  const [userData, setUserData] = useLocalStorage<UserData>('tamrinsaz-user-data', { sessions: [] }); // eslint-disable-line @typescript-eslint/no-unused-vars
+
+  // تابع getSessionName به اینجا بازگردانده شد
   const getSessionName = (exerciseId: string): string | undefined => {
     if (!userData || !userData.sessions) return undefined;
     for (const session of userData.sessions) {
@@ -152,6 +162,16 @@ export default function HomePage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Suspense Boundary برای HomePageSearchParamHandler */}
+      <Suspense fallback={null}>
+        <HomePageSearchParamHandler
+          setFilters={setFilters}
+          filters={filters}
+          router={router}
+          pathname={pathname}
+        />
+      </Suspense>
+
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
           تمرینات

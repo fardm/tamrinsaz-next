@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { WorkoutSession, Exercise } from '../types';
-import { Trash2, SquarePen, X, Check } from 'lucide-react'; // اضافه کردن Check به ایمپورت
+import { Trash2, SquarePen, X } from 'lucide-react'; // حذف Check از ایمپورت
 import Link from 'next/link';
 import Image from 'next/image';
 
