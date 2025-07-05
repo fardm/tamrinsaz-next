@@ -200,7 +200,7 @@ export default function ExerciseDetailPage() {
         }
         return session;
       });
-      onUpdateUserData({ sessions: updatedSessions });
+      handleUpdateUserData({ sessions: updatedSessions });
       setShowEditNotesModal(false);
       setSessionBeingEdited(null);
       setCurrentNotes('');
