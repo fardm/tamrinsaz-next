@@ -1,5 +1,5 @@
     # public/robots.txt
     User-agent: *
     Allow: /
-    Sitemap: https://app.tamrinsaz.ir/sitemap.xml
+    Sitemap: https://tamrinsaz.ir/sitemap.xml
     
