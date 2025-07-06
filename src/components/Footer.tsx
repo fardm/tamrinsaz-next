@@ -6,13 +6,13 @@ export function Footer() {
   return (
     <footer dir="ltr" className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row space-y-2 justify-between items-center">
           <p className="text-sm text-gray-600 dark:text-gray-400">
             © 2025 TamrinSaz.
           </p>
           <div className="flex space-x-3">
             <a
-              href="https://github.com/fardm"
+              href="https://github.com/fardm/tamrinsaz-next"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center space-x-2 space-x-reverse text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"

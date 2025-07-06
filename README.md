@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
 
-First, run the development server:
+# TamrinSaz
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+سایت تمرین‌ساز
+
+این سایت مخصوص کسانیه که می‌خوان برنامه تمرینی خودشون رو بسازن یا برنامه‌ای که از مربی گرفتن رو وارد کنن و راحت‌تر پیگیری کنن.
+
+  <br>
+
+## ویژگی‌ها
+✅ چک‌لیست و نوار پیشرفت برای هر جلسه
+
+✅ آموزش اجرای صحیح حرکات
+
+✅ فیلتر تمرین‌ها بر اساس عضله یا تجهیزات
+
+✅ امکان ساخت برنامه با هوش مصنوعی (https://tamrinsaz.ir/ai-workout-generator)
+
+
+⚠️ فعلا امکان لاگین نداره و اطلاعات روی مروگر خودتون ذخیره میشه. اما جای نگرانی نیست تا زمانی که تاریخچه یا کش رو پاک نکنید داده ها تون از بین نمیره. برای پشتیبان‌گیری هم می‌تونید از بخش «دانلود برنامه» استفاده کنید و فایل‌ رو به مرورگر یا دستگاه دیگه منتقل کنید.
+
+<br>
+
+## مشارکت در توسعه
+داده های این سایت هنوز کامل نیست و میتونه موارد بیشتری بهش اضافه بشه. اگه پیشنهادی دارید یا دوست دارید  تمرینات جدیدی اضافه بشه میتونید برای توسعه و تکملیش مشارکت کنید.
+
+تمرینات رو برام بفرستید تا خودم اضافه کنم یا مسقیما خودتون فایل ها رو ویرایش کنید.
+هر فایل شامل این موارده:
+- [ ] نام تمرین
+- [ ] تصویر
+- [ ] عضلات درگیر
+- [ ] وسایل مورد نیاز
+- [ ] نام دیگر
+- [ ] شرح تمرین
+
+همه تمرینات توی فایل [exercises.ts](/rc/data/exercises.ts)  با فرمت JSON ذخیره شدند:
+
+```JSON
+{
+    id: '1',
+    name: 'بارفیکس خوابیده',
+    targetMuscles: ['پشت'],
+    equipment: 'دستگاه',
+    image: '1.webp',
+    otherNames: 'Inverted Row',
+    description: '<a href="https://musclewiki.com/bodyweight/male/traps-middle/inverted-row/" target="_blank" rel="noopener noreferrer">MuscleWiki</a>'
+  },
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+تصویر حتما webp و کم حجم باشه. واتر مارک نداشته باشه. ابعادش ترجیحا 16:9 باشه. استایلش مثل همین تصاویر فعلی باشه.
