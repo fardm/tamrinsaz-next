@@ -1,16 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap'); */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* اعمال فونت وزیر مت بر روی تمامی عناصر و تگ body */
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('/fonts/Vazirmatn.woff2') format('woff2 supports variations'),
+       url('/fonts/Vazirmatn.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 * {
   font-family: 'Vazirmatn', system-ui, sans-serif;
 }
 
 body {
-  font-family: 'Vazirmatn', system-ui, sans-serif; /* تغییر فونت به وزیر مت */
+  font-family: 'Vazirmatn', system-ui, sans-serif;
 }
+
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
