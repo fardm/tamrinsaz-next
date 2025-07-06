@@ -50,7 +50,7 @@ export const exercisesData: Exercise[] = [
   },
   {
     id: '6',
-    name: 'نشر جلو دمبل',
+    name: 'نشر جلو چکشی',
     targetMuscles: ['سرشانه', 'دلتوئید قدامی'],
     equipment: 'دمبل',
     image: '6.webp',
@@ -127,7 +127,7 @@ export const exercisesData: Exercise[] = [
     equipment: 'سیمکش',
     image: '14.webp',
     otherNames: 'pull over',
-    // description: '<a href=" " target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
+    description: '<a href="https://musclewiki.com/cables/male/lats/cable-rope-pullover" target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
   },
   {
     id: '15',
@@ -239,12 +239,12 @@ export const exercisesData: Exercise[] = [
   },
   {
     id: '27',
-    name: 'اسکوات با دیوار',
+    name: 'اسکوات دیواری (وال سیت)',
     targetMuscles: ['پا', 'چهارسر ران'],
     equipment: 'بدون وسیله',
     image: '27.webp',
-    otherNames: '',
-    // description: '<a href=" " target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
+    otherNames: 'Wall Sit',
+    description: '<a href="https://musclewiki.com/bodyweight/male/quads/wall-sit" target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
   },
   {
     id: '28',
@@ -333,15 +333,18 @@ export const exercisesData: Exercise[] = [
     targetMuscles: ['پشت بازو'],
     equipment: 'بدون وسیله',
     image: '37.webp',
-    otherNames: 'Lever Seated Leg Curl',
+    otherNames: 'Diamond Knee Push Ups',
     description: '<a href="https://musclewiki.com/bodyweight/male/triceps/bodyweight-diamond-knee-push-ups/" target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
   },
   {
     id: '38',
-    name: 'لانگ بلغاری',
+    name: 'لانگ بلغاری با نیمکت',
     targetMuscles: ['باسن', 'پا'],
     equipment: 'نیمکت',
     image: '38.webp',
+    otherNames: 'Bulgarian Split Squat',
+    // description: '<a href=" " target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
+
   },
   {
     id: '39',
@@ -368,7 +371,7 @@ export const exercisesData: Exercise[] = [
     equipment: 'دستگاه',
     image: '41.webp',
     otherNames: 'Lever Seated Hip Adduction',
-    // description: '<a href=" " target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
+    description: '<a href="https://musclewiki.com/machine/male/inner-thigh/machine-hip-adduction" target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
   },
   {
     id: '42',
@@ -500,7 +503,7 @@ export const exercisesData: Exercise[] = [
     targetMuscles: ['چهارسر ران'],
     equipment: 'دستگاه',
     image: '56.webp',
-    otherNames: '',
+    otherNames: 'Lever Leg Extension',
     description: '<a href="https://musclewiki.com/machine/male/quads/machine-leg-extension/" target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
   },
   {
@@ -532,11 +535,11 @@ export const exercisesData: Exercise[] = [
   },
   {
     id: '60',
-    name: 'شنا دست جمع',
+    name: 'شنا دست جمع ( دست لوزی)',
     targetMuscles: ['سینه'],
     equipment: 'بدون وسیله',
     image: '60.webp',
-    otherNames: 'Diamond Push Ups',
+    otherNames: 'Diamond Push Ups (Close Grip)',
     description: '<a href="https://musclewiki.com/bodyweight/male/triceps/diamond-push-ups/" target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
   },
   {
@@ -554,7 +557,7 @@ export const exercisesData: Exercise[] = [
     targetMuscles: ['بالا سینه'],
     equipment: 'دمبل',
     image: '62.webp',
-    otherNames: '',
+    otherNames: 'Incline Dumbbell Press',
     description: '<a href="https://musclewiki.com/dumbbells/male/anterior-deltoid/dumbbell-incline-bench-press/" target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
   },
   {
@@ -563,7 +566,7 @@ export const exercisesData: Exercise[] = [
     targetMuscles: ['شکم', 'زیر شکم'],
     equipment: 'دستگاه',
     image: '63.webp',
-    otherNames: 'Leg Raise',
+    otherNames: 'Captains Chair Straight Leg Raise',
     // description: '<a href=" " target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
   },
   {
@@ -827,13 +830,13 @@ export const exercisesData: Exercise[] = [
     otherNames: 'Chest Dip',
     // description: '<a href=" " target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
   },
-  // {
-  //   id: '93',
-  //   name: 'جلوبازو لاری',
-  //   targetMuscles: ['جلو بازو'],
-  //   equipment: 'دستگاه',
-  //   image: '92.webp',
-  //   otherNames: '',
-  //   // description: '<a href=" " target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
-  // },
+  {
+    id: '93',
+    name: 'خارج ران دستگاه',
+    targetMuscles: ['خارج ران'],
+    equipment: 'دستگاه',
+    image: '93.webp',
+    otherNames: 'Lever Seated Hip Abduction',
+    // description: '<a href=" " target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
+  },
 ];
