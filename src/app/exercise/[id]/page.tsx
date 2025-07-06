@@ -13,12 +13,12 @@ export async function generateMetadata({ params }: { params: any }): Promise<Met
 
   if (!exercise) {
     return {
-      title: "تمرین یافت نشد - تمرین‌ساز",
+      title: "تمرین یافت نشد",
       description: "صفحه تمرین مورد نظر یافت نشد.",
     };
   }
 
-  const title = `${exercise.name} | تمرین‌ساز بدنسازی`;
+  const title = `${exercise.name} | تمرین‌ساز`;
   const description = `در این صفحه با ${exercise.name} آشنا می‌شوید؛ از عضلات درگیر و تجهیزات مورد نیاز تا اجرای اصولی و حرفه‌ای حرکت.${exercise.otherNames ? ` این تمرین با عنوان ${exercise.otherNames} هم شناخته می‌شود.` : ''}`;
   const keywords = [
     exercise.name,
