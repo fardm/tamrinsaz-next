@@ -5,7 +5,6 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true, // این خط بهینه‌سازی تصاویر Next.js را غیرفعال می‌کند
   },
-  // برای ساب‌دامین ریشه (app.tamrinsaz.ir) basePath را خالی تنظیم کنید.
   basePath: '', 
   // assetPrefix را به صورت شرطی تنظیم می‌کنیم تا فقط در محیط پروداکشن اعمال شود.
   // در محیط توسعه (npm run dev)، assetPrefix به undefined تنظیم می‌شود تا فایل‌ها از روت لوکال بارگذاری شوند.

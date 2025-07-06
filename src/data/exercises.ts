@@ -17,7 +17,9 @@ export const exercisesData: Exercise[] = [
     equipment: 'دستگاه',
     image: '2.webp',
     otherNames: '',
-    description: '<a href="https://musclewiki.com/machine/male/biceps/neutral-pulldown/" target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
+    description: `
+    <a href="https://musclewiki.com/machine/male/biceps/neutral-pulldown/" target="_blank" rel="noopener noreferrer">MuscleWiki</a>
+    `,
   },
   {
     id: '3',
@@ -823,6 +825,15 @@ export const exercisesData: Exercise[] = [
     equipment: 'دستگاه',
     image: '92.webp',
     otherNames: 'Chest Dip',
+    // description: '<a href=" " target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
+  },
+  {
+    id: '93',
+    name: 'جلوبازو لاری',
+    targetMuscles: ['جلوبازو'],
+    equipment: 'دستگاه',
+    image: '92.webp',
+    otherNames: '',
     // description: '<a href=" " target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
   },
 ];

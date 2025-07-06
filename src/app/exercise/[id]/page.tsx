@@ -6,7 +6,10 @@ import ExerciseDetailPageClient from './ExerciseDetailPageClient'; // ایمپو
 // تابع generateMetadata برای تولید Metadata پویا
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function generateMetadata({ params }: { params: any }): Promise<Metadata> {
-  const exercise = exercisesData.find(ex => ex.id === params.id);
+  // بر اساس خطای ترمینال Next.js، params باید await شود تا خصوصیات آن قابل دسترسی باشند.
+  // این کار تضمین می‌کند که 'id' قبل از استفاده به طور کامل بارگذاری شده است.
+  const resolvedParams = await params;
+  const exercise = exercisesData.find(ex => ex.id === resolvedParams.id);
 
   if (!exercise) {
     return {
@@ -73,7 +76,10 @@ export async function generateStaticParams() {
 
 // کامپوننت صفحه
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function ExercisePage({ params }: { params: any }) {
+export default async function ExercisePage({ params }: { params: any }) {
+  // بر اساس خطای ترمینال Next.js، params باید await شود تا خصوصیات آن قابل دسترسی باشند.
+  // این کار تضمین می‌کند که 'id' قبل از ارسال به Client Component به طور کامل بارگذاری شده است.
+  const resolvedParams = await params;
   // id را مستقیماً به Client Component ارسال می‌کنیم
-  return <ExerciseDetailPageClient id={params.id} />;
+  return <ExerciseDetailPageClient id={resolvedParams.id} />;
 }
