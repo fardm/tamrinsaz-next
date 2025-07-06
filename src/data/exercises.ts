@@ -827,13 +827,13 @@ export const exercisesData: Exercise[] = [
     otherNames: 'Chest Dip',
     // description: '<a href=" " target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
   },
-  {
-    id: '93',
-    name: 'جلوبازو لاری',
-    targetMuscles: ['جلوبازو'],
-    equipment: 'دستگاه',
-    image: '92.webp',
-    otherNames: '',
-    // description: '<a href=" " target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
-  },
+  // {
+  //   id: '93',
+  //   name: 'جلوبازو لاری',
+  //   targetMuscles: ['جلو بازو'],
+  //   equipment: 'دستگاه',
+  //   image: '92.webp',
+  //   otherNames: '',
+  //   // description: '<a href=" " target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
+  // },
 ];

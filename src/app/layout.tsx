@@ -14,11 +14,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "تمرین‌ساز بدنسازی | ساخت برنامه بدنسازی",
     description: "با تمرین‌ساز برنامه تمرینی شخصی‌سازی‌شده بسازید و به بانک کامل تمرینات بدنسازی با توضیحات، عضلات هدف و ویدیوهای آموزشی دسترسی داشته باشید.",
-    url: "https://app.tamrinsaz.ir",
+    url: "https://tamrinsaz.ir",
     siteName: "تمرین‌ساز بدنسازی",
     images: [
       {
-        url: "https://app.tamrinsaz.ir/og-image.jpg",
+        url: "https://tamrinsaz.ir/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "تمرین‌ساز بدنسازی | برنامه بدنسازی",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "تمرین‌ساز بدنسازی | ساخت برنامه بدنسازی",
     description: "با تمرین‌ساز برنامه تمرینی شخصی‌سازی‌شده بسازید و به بانک کامل تمرینات بدنسازی با توضیحات، عضلات هدف و ویدیوهای آموزشی دسترسی داشته باشید.",
-    images: ["https://app.tamrinsaz.ir/og-image.jpg"],
+    images: ["https://tamrinsaz.ir/og-image.jpg"],
   },
   other: {
     "dc.language": "fa",

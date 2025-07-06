@@ -47,10 +47,10 @@ export async function generateMetadata({ params }: { params: any }): Promise<Met
     openGraph: {
       title: title,
       description: description,
-      url: `https://app.tamrinsaz.ir/exercise/${exercise.id}`,
+      url: `https://tamrinsaz.ir/exercise/${exercise.id}`,
       images: [
         {
-          url: exercise.image && exercise.image.startsWith('http') ? exercise.image : `https://app.tamrinsaz.ir/images/${exercise.image || 'placeholder.webp'}`,
+          url: exercise.image && exercise.image.startsWith('http') ? exercise.image : `https://tamrinsaz.ir/images/${exercise.image || 'placeholder.webp'}`,
           width: 800,
           height: 450,
           alt: exercise.name,
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: { params: any }): Promise<Met
       card: "summary_large_image",
       title: title,
       description: description,
-      images: [exercise.image && exercise.image.startsWith('http') ? exercise.image : `https://app.tamrinsaz.ir/images/${exercise.image || 'placeholder.webp'}`],
+      images: [exercise.image && exercise.image.startsWith('http') ? exercise.image : `https://tamrinsaz.ir/images/${exercise.image || 'placeholder.webp'}`],
     },
   };
 }
