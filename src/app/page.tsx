@@ -2,70 +2,84 @@
 "use client"; // این خط برای استفاده از هوک‌های React ضروری است
 
 import React, { useState, useMemo, useEffect, useRef, Suspense, useCallback } from 'react';
+// SearchBar کامپوننت نوار جستجو است.
 import { SearchBar } from '../components/SearchBar';
+// ExerciseGrid کامپوننت نمایش شبکه‌ای تمرینات است.
 import { ExerciseGrid } from '../components/ExerciseGrid';
+// exercisesData شامل داده‌های تمرینات است.
 import { exercisesData } from '../data/exercises';
+// FilterRule و UserData تایپ‌های داده سفارشی هستند.
 import { FilterRule, UserData } from '../types';
+// آیکون Filter از lucide-react ایمپورت می‌شود.
 import { Filter } from 'lucide-react';
+// useLocalStorage هوک سفارشی برای مدیریت localStorage است.
 import { useLocalStorage } from '../hooks/useLocalStorage';
+// useSearchParams, useRouter, usePathname هوک‌های ناوبری Next.js هستند.
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { FilterPanel } from '../components/FilterPanel';
-// import { SortPanel } from '../components/SortPanel'; // ایمپورت SortPanel حذف شده است
+// import { FilterPanel } from '../components/FilterPanel'; // ایمپورت اصلی حذف شد
 
-const EXERCISES_PER_PAGE = 20;
+// ایمپورت پویا برای FilterPanel
+// این پنل فیلتر فقط زمانی که showFilterModal true شود، بارگذاری خواهد شد.
+import dynamic from 'next/dynamic';
+const FilterPanel = dynamic(() => import('../components/FilterPanel').then(mod => mod.FilterPanel), {
+  ssr: false, // اطمینان از اینکه این کامپوننت فقط در سمت کلاینت بارگذاری شود.
+});
 
-// کامپوننت جداگانه برای مدیریت useSearchParams در صفحه اصلی
+const EXERCISES_PER_PAGE = 20; // تعداد تمرینات قابل نمایش در هر بار بارگذاری.
+
+// کامپوننت جداگانه برای مدیریت useSearchParams در صفحه اصلی.
 const HomePageSearchParamHandler = ({ setFilters, filters, router, pathname }: {
   setFilters: (filters: FilterRule[]) => void;
   filters: FilterRule[];
   router: ReturnType<typeof useRouter>;
   pathname: string;
 }) => {
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams(); // هوک برای دسترسی به پارامترهای URL.
   useEffect(() => {
-    const filterField = searchParams.get('filterField');
-    const filterValue = searchParams.get('filterValue');
+    const filterField = searchParams.get('filterField'); // دریافت فیلد فیلتر از URL.
+    const filterValue = searchParams.get('filterValue'); // دریافت مقدار فیلتر از URL.
 
     if (filterField && filterValue) {
-      const decodedFilterValue = decodeURIComponent(filterValue);
+      const decodedFilterValue = decodeURIComponent(filterValue); // دیکد کردن مقدار فیلتر.
       const newFilter: FilterRule = {
-        id: Date.now().toString(),
-        field: filterField as 'equipment' | 'targetMuscles',
-        values: [decodedFilterValue],
+        id: Date.now().toString(), // تولید یک شناسه منحصر به فرد برای فیلتر.
+        field: filterField as 'equipment' | 'targetMuscles', // تعیین فیلد فیلتر.
+        values: [decodedFilterValue], // تعیین مقدار فیلتر.
       };
 
+      // بررسی اینکه آیا فیلتر قبلاً اعمال شده است یا خیر.
       const isFilterAlreadyApplied = filters.some(
         (f) => f.field === newFilter.field && f.values.includes(decodedFilterValue)
       );
 
-      // اگر فیلتر قبلاً اعمال نشده باشد، آن را اضافه کن
+      // اگر فیلتر قبلاً اعمال نشده باشد، آن را اضافه کن.
       if (!isFilterAlreadyApplied) {
         setFilters([newFilter]); 
       }
 
-      // حذف پارامترهای URL پس از اعمال فیلتر
+      // حذف پارامترهای URL پس از اعمال فیلتر برای تمیز کردن URL.
       router.replace(pathname); 
     }
   }, [searchParams, setFilters, router, pathname, filters]);
-  return null;
+  return null; // این کامپوننت چیزی رندر نمی‌کند.
 };
 
 
 export default function HomePage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filters, setFilters] = useLocalStorage<FilterRule[]>('tamrinsaz-filters', []);
-  const [visibleExerciseCount, setVisibleExerciseCount] = useState(EXERCISES_PER_PAGE);
-  const [isLoading, setIsLoading] = useState(false);
-  const loaderRef = useRef<HTMLDivElement>(null);
+  const [searchTerm, setSearchTerm] = useState(''); // وضعیت برای متن جستجو.
+  const [filters, setFilters] = useLocalStorage<FilterRule[]>('tamrinsaz-filters', []); // وضعیت برای فیلترهای اعمال شده (ذخیره در localStorage).
+  const [visibleExerciseCount, setVisibleExerciseCount] = useState(EXERCISES_PER_PAGE); // تعداد تمرینات قابل مشاهده.
+  const [isLoading, setIsLoading] = useState(false); // وضعیت بارگذاری (برای Infinite Scroll).
+  const loaderRef = useRef<HTMLDivElement>(null); // رفرنس برای عنصر لودر (برای Infinite Scroll).
 
-  const [showFilterModal, setShowFilterModal] = useState(false);
-  const router = useRouter();
-  const pathname = usePathname();
+  const [showFilterModal, setShowFilterModal] = useState(false); // وضعیت نمایش مودال فیلتر.
+  const router = useRouter(); // هوک روتر Next.js.
+  const pathname = usePathname(); // هوک برای دریافت مسیر فعلی.
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [userData, setUserData] = useLocalStorage<UserData>('tamrinsaz-user-data', { sessions: [] });
+  const [userData, setUserData] = useLocalStorage<UserData>('tamrinsaz-user-data', { sessions: [] }); // وضعیت داده‌های کاربر (ذخیره در localStorage).
 
-  // تابع getSessionName به عنوان useCallback برای بهینه‌سازی
+  // تابع getSessionName به عنوان useCallback برای بهینه‌سازی.
   const getSessionName = useCallback((exerciseId: string): string | undefined => {
     if (!userData || !userData.sessions) return undefined;
     for (const session of userData.sessions) {
@@ -76,9 +90,11 @@ export default function HomePage() {
     return undefined;
   }, [userData]); 
 
+  // استفاده از useMemo برای بهینه‌سازی فیلتر و مرتب‌سازی تمرینات.
   const filteredAndSortedExercises = useMemo(() => {
-    let result = [...exercisesData];
+    let result = [...exercisesData]; // کپی از داده‌های اصلی تمرینات.
 
+    // اعمال فیلتر جستجو.
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
       result = result.filter(exercise =>
@@ -89,6 +105,7 @@ export default function HomePage() {
       );
     }
 
+    // اعمال فیلترهای انتخاب شده.
     filters.forEach(filter => {
       if (filter.values.length > 0) {
         result = result.filter(exercise => {
@@ -102,36 +119,40 @@ export default function HomePage() {
       }
     });
 
-    // در این نسخه، مرتب‌سازی خاصی اعمال نمی‌شود
-    // اگر نیاز به مرتب‌سازی پیش‌فرض دارید (مثلاً بر اساس نام)، می‌توانید اینجا اضافه کنید
+    // در این نسخه، مرتب‌سازی خاصی اعمال نمی‌شود.
+    // اگر نیاز به مرتب‌سازی پیش‌فرض دارید (مثلاً بر اساس نام)، می‌توانید اینجا اضافه کنید.
     result.sort((a, b) => a.name.localeCompare(b.name, 'fa', { sensitivity: 'base' }));
 
 
     return result;
   }, [searchTerm, filters]); 
   
+  // تمریناتی که باید نمایش داده شوند (بر اساس visibleExerciseCount).
   const exercisesToShow = filteredAndSortedExercises.slice(0, visibleExerciseCount);
+  // بررسی اینکه آیا تمرینات بیشتری برای بارگذاری وجود دارد یا خیر.
   const hasMoreExercises = filteredAndSortedExercises.length > exercisesToShow.length;
 
+  // useEffect برای پیاده‌سازی Infinite Scroll با Intersection Observer.
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMoreExercises && !isLoading) {
-          setIsLoading(true);
-          setTimeout(() => {
-            setVisibleExerciseCount(prevCount => prevCount + EXERCISES_PER_PAGE);
-            setIsLoading(false);
+          setIsLoading(true); // شروع بارگذاری.
+          setTimeout(() => { // تأخیر مصنوعی برای شبیه‌سازی بارگذاری.
+            setVisibleExerciseCount(prevCount => prevCount + EXERCISES_PER_PAGE); // افزایش تعداد تمرینات قابل نمایش.
+            setIsLoading(false); // پایان بارگذاری.
           }, 500);
         }
       },
-      { threshold: 1.0 }
+      { threshold: 1.0 } // زمانی که لودر کاملاً در viewport قرار گرفت.
     );
 
     const currentLoaderRef = loaderRef.current;
     if (currentLoaderRef) {
-      observer.observe(currentLoaderRef);
+      observer.observe(currentLoaderRef); // شروع مشاهده عنصر لودر.
     }
 
+    // پاکسازی observer هنگام unmount شدن کامپوننت.
     return () => {
       if (currentLoaderRef) {
         observer.unobserve(currentLoaderRef);
@@ -139,6 +160,7 @@ export default function HomePage() {
     };
   }, [hasMoreExercises, isLoading, loaderRef, setVisibleExerciseCount]);
 
+  // بررسی اینکه آیا فیلتر فعالی وجود دارد یا خیر.
   const hasActiveFilters = filters.some(f => f.values.length > 0);
 
   return (
@@ -192,6 +214,7 @@ export default function HomePage() {
         getSessionName={getSessionName}
       />
 
+      {/* نمایش لودر یا پیام "در حال بارگذاری..." برای Infinite Scroll */}
       {hasMoreExercises && (
         <div ref={loaderRef} className="flex justify-center mt-8">
           {isLoading ? (
@@ -208,12 +231,15 @@ export default function HomePage() {
         </div>
       )}
 
-      <FilterPanel
-        isOpen={showFilterModal}
-        onClose={() => setShowFilterModal(false)}
-        currentFilters={filters}
-        onApplyFilters={setFilters}
-      />
+      {/* رندر FilterPanel فقط در صورت نیاز (بارگذاری پویا) */}
+      {showFilterModal && (
+        <FilterPanel
+          isOpen={showFilterModal}
+          onClose={() => setShowFilterModal(false)}
+          currentFilters={filters}
+          onApplyFilters={setFilters}
+        />
+      )}
     </div>
   );
 }

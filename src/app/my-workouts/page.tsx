@@ -9,12 +9,27 @@ import { SessionCard } from '../../components/SessionCard';
 import { exercisesData } from '../../data/exercises';
 import { UserData, WorkoutSession } from '../../types';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
-import { NewSessionModal } from '../../components/NewSessionModal';
-import { ImportProgramModal } from '../../components/ImportProgramModal';
-import { ExportProgramModal } from '../../components/ExportProgramModal';
+// import { NewSessionModal } from '../../components/NewSessionModal'; // ایمپورت اصلی حذف شد
+// import { ImportProgramModal } from '../../components/ImportProgramModal'; // ایمپورت اصلی حذف شد
+// import { ExportProgramModal } from '../../components/ExportProgramModal'; // ایمپورت اصلی حذف شد
 import { saveUserData, clearUserData } from '../../utils/storage';
 
-// کامپوننت جداگانه برای منطق useSearchParams
+// ایمپورت پویا برای مودال‌ها
+// این مودال‌ها فقط زمانی که showNewSessionModal، showImportProgramModal یا showExportProgramModal true شوند، بارگذاری خواهند شد.
+import dynamic from 'next/dynamic';
+
+const NewSessionModal = dynamic(() => import('../../components/NewSessionModal').then(mod => mod.NewSessionModal), {
+  ssr: false, // اطمینان از اینکه این کامپوننت فقط در سمت کلاینت بارگذاری شود.
+});
+const ImportProgramModal = dynamic(() => import('../../components/ImportProgramModal').then(mod => mod.ImportProgramModal), {
+  ssr: false, // اطمینان از اینکه این کامپوننت فقط در سمت کلاینت بارگذاری شود.
+});
+const ExportProgramModal = dynamic(() => import('../../components/ExportProgramModal').then(mod => mod.ExportProgramModal), {
+  ssr: false, // اطمینان از اینکه این کامپوننت فقط در سمت کلاینت بارگذاری شود.
+});
+
+
+// کامپوننت جداگانه برای مدیریت منطق useSearchParams.
 const MyWorkoutsSearchParamHandler = ({ activeTab, setActiveTab, router }: {
   activeTab: string;
   setActiveTab: (tab: string) => void;
@@ -30,42 +45,46 @@ const MyWorkoutsSearchParamHandler = ({ activeTab, setActiveTab, router }: {
       router.replace('/my-workouts');
     }
   }, [searchParams, activeTab, setActiveTab, router]);
-  return null; // این کامپوننت چیزی رندر نمی‌کند
+  return null; // این کامپوننت چیزی رندر نمی‌کند.
 };
 
-// کامپوننت اصلی صفحه MyWorkoutsPage
+// کامپوننت اصلی صفحه MyWorkoutsPage.
 export default function MyWorkoutsPage() {
-  const router = useRouter();
-  const [userData, setUserData] = useLocalStorage<UserData>('tamrinsaz-user-data', { sessions: [] });
-  const [activeTab, setActiveTab] = useLocalStorage<string>('workout-active-tab', 'all');
+  const router = useRouter(); // هوک روتر Next.js.
+  const [userData, setUserData] = useLocalStorage<UserData>('tamrinsaz-user-data', { sessions: [] }); // وضعیت داده‌های کاربر.
+  const [activeTab, setActiveTab] = useLocalStorage<string>('workout-active-tab', 'all'); // وضعیت تب فعال (همه جلسات یا یک جلسه خاص).
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // وضعیت باز یا بسته بودن سایدبار.
+  // useEffect برای تنظیم وضعیت اولیه سایدبار بر اساس اندازه صفحه.
   useEffect(() => {
     if (typeof window !== 'undefined') {
       setIsSidebarOpen(window.matchMedia('(min-width: 768px)').matches);
     }
   }, []);
 
-  const sidebarRef = useRef<HTMLDivElement>(null);
+  const sidebarRef = useRef<HTMLDivElement>(null); // رفرنس برای سایدبار.
 
-  const [showNewSessionModal, setShowNewSessionModal] = useState(false);
-  const [showClearConfirm, setShowClearConfirm] = useState(false);
-  const [showHelpModal, setShowHelpModal] = useState(false);
-  const [showExportProgramModal, setShowExportProgramModal] = useState(false);
-  const [showImportProgramModal, setShowImportProgramModal] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [toastType, setToastType] = useState<'success' | 'delete' | null>(null);
+  const [showNewSessionModal, setShowNewSessionModal] = useState(false); // وضعیت نمایش مودال ایجاد جلسه جدید.
+  const [showClearConfirm, setShowClearConfirm] = useState(false); // وضعیت نمایش مودال تأیید حذف همه داده‌ها.
+  const [showHelpModal, setShowHelpModal] = useState(false); // وضعیت نمایش مودال راهنما.
+  const [showExportProgramModal, setShowExportProgramModal] = useState(false); // وضعیت نمایش مودال اکسپورت برنامه.
+  const [showImportProgramModal, setShowImportProgramModal] = useState(false); // وضعیت نمایش مودال ایمپورت برنامه.
+  const [toastMessage, setToastMessage] = useState<string | null>(null); // پیام توست (Toast).
+  const [toastType, setToastType] = useState<'success' | 'delete' | null>(null); // نوع توست (موفقیت یا حذف).
 
-  const clearModalRef = useRef<HTMLDivElement>(null);
-  const helpModalRef = useRef<HTMLDivElement>(null);
+  const clearModalRef = useRef<HTMLDivElement>(null); // رفرنس برای مودال تأیید حذف.
+  const helpModalRef = useRef<HTMLDivElement>(null); // رفرنس برای مودال راهنما.
 
+  // تابع برای به‌روزرسانی داده‌های کاربر و ذخیره آن‌ها در localStorage.
   const handleUpdateUserData = (newData: UserData) => {
     saveUserData(newData);
     setUserData(newData);
   };
 
+  // تابع برای تشخیص اینکه آیا دستگاه موبایل است یا خیر.
   const isMobile = () => typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
 
+  // useEffect برای مدیریت بستن مودال‌ها و سایدبار با کلید Escape یا کلیک بیرون از آن‌ها.
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -79,30 +98,36 @@ export default function MyWorkoutsPage() {
     };
 
     const handleClickOutside = (event: MouseEvent) => {
+      // بستن سایدبار در موبایل با کلیک بیرون.
       if (isMobile() && sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
         setIsSidebarOpen(false);
       }
+      // بستن مودال تأیید حذف با کلیک بیرون.
       if (clearModalRef.current && !clearModalRef.current.contains(event.target as Node)) {
         setShowClearConfirm(false);
       }
+      // بستن مودال راهنما با کلیک بیرون.
       if (helpModalRef.current && !helpModalRef.current.contains(event.target as Node)) {
         setShowHelpModal(false);
       }
     };
 
+    // اضافه کردن event listenerها در صورت باز بودن سایدبار یا هر مودالی.
     if (isSidebarOpen || showNewSessionModal || showClearConfirm || showHelpModal || showExportProgramModal || showImportProgramModal) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden'; // جلوگیری از اسکرول پس‌زمینه.
       document.addEventListener('keydown', handleEscape);
       document.addEventListener('mousedown', handleClickOutside);
     }
 
+    // پاکسازی event listenerها هنگام unmount شدن یا بسته شدن.
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = ''; // فعال کردن مجدد اسکرول پس‌زمینه.
       document.removeEventListener('keydown', handleEscape);
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isSidebarOpen, showNewSessionModal, showClearConfirm, showHelpModal, showExportProgramModal, showImportProgramModal]);
 
+  // فیلتر کردن جلسات بر اساس تب فعال.
   const filteredSessions = userData.sessions.filter(session => {
     if (activeTab === 'all') {
       return true;
@@ -110,6 +135,7 @@ export default function MyWorkoutsPage() {
     return session.id === activeTab;
   });
 
+  // تابع برای ایجاد جلسه جدید.
   const handleCreateSession = (sessionName: string) => {
     const newSession: WorkoutSession = {
       id: Date.now().toString(),
@@ -121,11 +147,12 @@ export default function MyWorkoutsPage() {
     handleUpdateUserData({
       sessions: [...userData.sessions, newSession]
     });
-    setShowNewSessionModal(false);
-    setActiveTab(newSession.id);
-    showToast('جلسه با موفقیت ایجاد شد', 'success');
+    setShowNewSessionModal(false); // بستن مودال پس از ایجاد.
+    setActiveTab(newSession.id); // فعال کردن تب جلسه جدید.
+    showToast('جلسه با موفقیت ایجاد شد', 'success'); // نمایش پیام موفقیت.
   };
 
+  // تابع برای تغییر وضعیت تکمیل شدن یک تمرین در جلسه.
   const handleToggleExercise = (sessionId: string, exerciseId: string) => {
     const updatedSessions = userData.sessions.map(session => {
       if (session.id === sessionId) {
@@ -142,6 +169,7 @@ export default function MyWorkoutsPage() {
     handleUpdateUserData({ sessions: updatedSessions });
   };
 
+  // تابع برای حذف یک تمرین از جلسه.
   const handleRemoveExercise = (sessionId: string, exerciseId: string) => {
     const updatedSessions = userData.sessions.map(session => {
       if (session.id === sessionId) {
@@ -156,28 +184,32 @@ export default function MyWorkoutsPage() {
     handleUpdateUserData({ sessions: updatedSessions });
   };
 
+  // تابع برای حذف یک جلسه کامل.
   const handleDeleteSession = (sessionId: string) => {
     const updatedSessions = userData.sessions.filter(session => session.id !== sessionId);
     handleUpdateUserData({ sessions: updatedSessions });
-    if (activeTab === sessionId) {
-      setActiveTab('all');
+    if (activeTab === sessionId) { // اگر تب فعال همان جلسه‌ای بود که حذف شد.
+      setActiveTab('all'); // به تب "همه" برگرد.
     }
-    showToast('جلسه با موفقیت حذف شد', 'delete');
+    showToast('جلسه با موفقیت حذف شد', 'delete'); // نمایش پیام حذف.
   };
 
+  // تابع برای تغییر نام یک جلسه.
   const handleRenameSession = (sessionId: string, newName: string) => {
     const updatedSessions = userData.sessions.map(session =>
       session.id === sessionId ? { ...session, name: newName } : session
     );
     handleUpdateUserData({ sessions: updatedSessions });
-    showToast('نام جلسه با موفقیت تغییر یافت', 'success');
+    showToast('نام جلسه با موفقیت تغییر یافت', 'success'); // نمایش پیام موفقیت.
   };
 
+  // تابع برای نمایش توست.
   const showToast = (message: string, type: 'success' | 'delete') => {
     setToastMessage(message);
     setToastType(type);
   };
 
+  // useEffect برای پنهان کردن توست پس از ۳ ثانیه.
   useEffect(() => {
     if (toastMessage) {
       const timer = setTimeout(() => {
@@ -188,26 +220,28 @@ export default function MyWorkoutsPage() {
     }
   }, [toastMessage]);
 
+  // تابع برای پاک کردن تمام داده‌های کاربر.
   const handleClearData = () => {
     clearUserData();
     handleUpdateUserData({ sessions: [] });
-    setShowClearConfirm(false);
-    showToast('تمام داده‌ها پاک شدند', 'delete');
+    setShowClearConfirm(false); // بستن مودال تأیید.
+    showToast('تمام داده‌ها پاک شدند', 'delete'); // نمایش پیام حذف.
   };
 
+  // توابع برای باز کردن مودال‌های مختلف.
   const handleOpenImportProgramModal = () => {
     setShowImportProgramModal(true);
-    if (isMobile()) setIsSidebarOpen(false);
+    if (isMobile()) setIsSidebarOpen(false); // بستن سایدبار در موبایل.
   };
 
   const handleOpenExportProgramModal = () => {
     setShowExportProgramModal(true);
-    if (isMobile()) setIsSidebarOpen(false);
+    if (isMobile()) setIsSidebarOpen(false); // بستن سایدبار در موبایل.
   };
 
   const handleOpenHelpModal = () => {
     setShowHelpModal(true);
-    if (isMobile()) setIsSidebarOpen(false);
+    if (isMobile()) setIsSidebarOpen(false); // بستن سایدبار در موبایل.
   };
 
   return (
@@ -221,6 +255,7 @@ export default function MyWorkoutsPage() {
         />
       </Suspense>
 
+      {/* دکمه باز کردن سایدبار در موبایل (پایین راست) */}
       {!isSidebarOpen && (
         <button
           onClick={() => setIsSidebarOpen(true)}
@@ -231,6 +266,7 @@ export default function MyWorkoutsPage() {
         </button>
       )}
 
+      {/* دکمه باز کردن سایدبار در دسکتاپ (وسط راست) */}
       {!isSidebarOpen && (
         <button
           onClick={() => setIsSidebarOpen(true)}
@@ -241,6 +277,7 @@ export default function MyWorkoutsPage() {
         </button>
       )}
 
+      {/* اورلی (Overlay) برای بستن سایدبار در موبایل با کلیک بیرون */}
       {isSidebarOpen && isMobile() && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -248,6 +285,7 @@ export default function MyWorkoutsPage() {
         ></div>
       )}
 
+      {/* سایدبار (پنل سمت راست) */}
       <div
         ref={sidebarRef}
         className={`fixed top-0 bottom-0 right-0 w-64 h-full bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 shadow-lg z-50 p-4 flex flex-col transition-transform duration-300 ease-in-out
@@ -255,6 +293,7 @@ export default function MyWorkoutsPage() {
           md:top-0 md:h-full md:w-64 md:${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <div className="flex justify-end items-center mb-6">
+          {/* دکمه بستن سایدبار در موبایل و دسکتاپ */}
           <button
             onClick={() => setIsSidebarOpen(false)}
             className="md:hidden text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
@@ -271,6 +310,7 @@ export default function MyWorkoutsPage() {
           </button>
         </div>
 
+        {/* منوی سایدبار */}
         <nav className="flex flex-col space-y-2">
           <button
             onClick={() => { setShowNewSessionModal(true); if (isMobile()) setIsSidebarOpen(false); }}
@@ -320,6 +360,7 @@ export default function MyWorkoutsPage() {
         </nav>
       </div>
 
+      {/* محتوای اصلی صفحه */}
       <div className="flex-1 overflow-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-8">
@@ -331,6 +372,7 @@ export default function MyWorkoutsPage() {
             </p>
           </div>
 
+          {/* تب‌های انتخاب جلسه (فقط در دسکتاپ) */}
           <div className="hidden md:flex border-b border-gray-200 dark:border-gray-700 mb-6 overflow-x-auto whitespace-nowrap">
             <button
               onClick={() => setActiveTab('all')}
@@ -357,6 +399,7 @@ export default function MyWorkoutsPage() {
             ))}
           </div>
 
+          {/* دراپ‌داون انتخاب جلسه (فقط در موبایل) */}
           <div className="md:hidden mb-6">
             <label htmlFor="session-select" className="sr-only">انتخاب جلسه</label>
             <select
@@ -374,6 +417,7 @@ export default function MyWorkoutsPage() {
             </select>
           </div>
 
+          {/* نمایش کارت‌های جلسه */}
           {filteredSessions.length > 0 ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {filteredSessions.map((session) => (
@@ -406,26 +450,34 @@ export default function MyWorkoutsPage() {
         </div>
       </div>
 
-      <NewSessionModal
-        isOpen={showNewSessionModal}
-        onClose={() => setShowNewSessionModal(false)}
-        onCreateSession={handleCreateSession}
-      />
+      {/* رندر مودال‌ها فقط در صورت نیاز (بارگذاری پویا) */}
+      {showNewSessionModal && (
+        <NewSessionModal
+          isOpen={showNewSessionModal}
+          onClose={() => setShowNewSessionModal(false)}
+          onCreateSession={handleCreateSession}
+        />
+      )}
 
-      <ImportProgramModal
-        isOpen={showImportProgramModal}
-        onClose={() => setShowImportProgramModal(false)}
-        onUpdateUserData={handleUpdateUserData}
-        showToast={showToast}
-      />
+      {showImportProgramModal && (
+        <ImportProgramModal
+          isOpen={showImportProgramModal}
+          onClose={() => setShowImportProgramModal(false)}
+          onUpdateUserData={handleUpdateUserData}
+          showToast={showToast}
+        />
+      )}
 
-      <ExportProgramModal
-        isOpen={showExportProgramModal}
-        onClose={() => setShowExportProgramModal(false)}
-        userData={userData}
-        showToast={showToast}
-      />
+      {showExportProgramModal && (
+        <ExportProgramModal
+          isOpen={showExportProgramModal}
+          onClose={() => setShowExportProgramModal(false)}
+          userData={userData}
+          showToast={showToast}
+        />
+      )}
 
+      {/* مودال تأیید حذف (Clear Confirm) */}
       {showClearConfirm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div
@@ -456,6 +508,7 @@ export default function MyWorkoutsPage() {
         </div>
       )}
 
+      {/* مودال راهنما (Help Modal) */}
       {showHelpModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div
@@ -484,6 +537,7 @@ export default function MyWorkoutsPage() {
         </div>
       )}
 
+      {/* توست (Toast) برای نمایش پیام‌ها */}
       {toastMessage && (
         <div
           className={`fixed top-6 right-6 z-50 px-4 py-2 rounded-md shadow-lg animate-fade-in-out ${

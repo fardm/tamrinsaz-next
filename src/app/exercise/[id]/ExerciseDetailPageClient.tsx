@@ -2,19 +2,25 @@
 "use client"; // این خط این فایل را به یک Client Component تبدیل می‌کند.
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-// import { useParams } from 'next/navigation'; // useParams حذف شد
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { ArrowRight, Plus, Check, X, SquarePen } from 'lucide-react';
 import { exercisesData } from '../../../data/exercises';
-import { AddToWorkoutModal } from '../../../components/AddToWorkoutModal';
+// کامپوننت AddToWorkoutModal به صورت پویا ایمپورت می‌شود.
+// import { AddToWorkoutModal } from '../../../components/AddToWorkoutModal'; // ایمپورت اصلی حذف شد
 import { UserData, WorkoutSession, SessionExercise } from '../../../types';
 import { ImageTextDisplay } from '../../../components/ImageTextDisplay';
 import { muscleOptions, equipmentOptionsList } from '../../../components/FilterPanel';
 import { getUserData, saveUserData } from '../../../utils/storage';
 
-// تعریف defaultImage و getImageUrl در خارج از کامپوننت
+// ایمپورت پویا برای AddToWorkoutModal این مودال فقط زمانی که showAddModal true شود، بارگذاری خواهد شد.
+import dynamic from 'next/dynamic';
+const AddToWorkoutModal = dynamic(() => import('../../../components/AddToWorkoutModal').then(mod => mod.AddToWorkoutModal), {
+  ssr: false, // اطمینان از اینکه این کامپوننت فقط در سمت کلاینت بارگذاری شود.
+});
+
+// تعریف defaultImage و getImageUrl در خارج از کامپوننت برای جلوگیری از رندرهای غیرضروری.
 const defaultImage = 'https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=800';
 
 const getImageUrl = (imageName: string | undefined) => {
@@ -28,37 +34,40 @@ const getImageUrl = (imageName: string | undefined) => {
   return defaultImage;
 };
 
-// ExerciseDetailPageClient اکنون id را به عنوان prop دریافت می‌کند
+// ExerciseDetailPageClient اکنون id را به عنوان prop دریافت می‌کند.
 export default function ExerciseDetailPageClient({ id }: { id: string }) {
-  // const { id } = useParams<{ id: string }>(); // این خط حذف شد
-  const router = useRouter();
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [sessionIdToDelete, setSessionIdToDelete] = useState<string | null>(null);
-  const deleteModalRef = useRef<HTMLDivElement>(null);
+  const router = useRouter(); // هوک روتر Next.js
+  const [showAddModal, setShowAddModal] = useState(false); // وضعیت نمایش مودال افزودن به برنامه
+  const [showDeleteModal, setShowDeleteModal] = useState(false); // وضعیت نمایش مودال حذف تمرین از جلسه
+  const [sessionIdToDelete, setSessionIdToDelete] = useState<string | null>(null); // شناسه جلسه‌ای که تمرین از آن حذف می‌شود.
+  const deleteModalRef = useRef<HTMLDivElement>(null); // رفرنس برای مودال حذف.
 
-  const [showEditNotesModal, setShowEditNotesModal] = useState(false);
-  const [sessionBeingEdited, setSessionBeingEdited] = useState<string | null>(null);
-  const [currentNotes, setCurrentNotes] = useState<string>('');
-  const editNotesModalRef = useRef<HTMLDivElement>(null);
+  const [showEditNotesModal, setShowEditNotesModal] = useState(false); // وضعیت نمایش مودال ویرایش یادداشت‌ها.
+  const [sessionBeingEdited, setSessionBeingEdited] = useState<string | null>(null); // شناسه جلسه‌ای که یادداشت‌های آن ویرایش می‌شود.
+  const [currentNotes, setCurrentNotes] = useState<string>(''); // یادداشت‌های فعلی در حال ویرایش.
+  const editNotesModalRef = useRef<HTMLDivElement>(null); // رفرنس برای مودال ویرایش یادداشت‌ها.
 
-  const [userData, setUserData] = useState<UserData>({ sessions: [] });
+  const [userData, setUserData] = useState<UserData>({ sessions: [] }); // وضعیت داده‌های کاربر (شامل جلسات تمرینی).
 
+  // تابع برای به‌روزرسانی داده‌های کاربر در localStorage و وضعیت کامپوننت.
   const handleUpdateUserData = (newData: UserData) => {
     saveUserData(newData);
     setUserData(newData);
   };
 
+  // useEffect برای بارگذاری داده‌های کاربر هنگام mount شدن کامپوننت.
   useEffect(() => {
     setUserData(getUserData());
   }, []);
 
+  // تابع useCallback برای لغو ویرایش یادداشت‌ها.
   const handleCancelEditNotes = useCallback(() => {
     setShowEditNotesModal(false);
     setSessionBeingEdited(null);
     setCurrentNotes('');
   }, []);
 
+  // useEffect برای مدیریت بستن مودال‌ها با کلید Escape یا کلیک بیرون از آن‌ها.
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -74,11 +83,13 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
     };
 
     const handleClickOutside = (event: MouseEvent) => {
+      // بررسی کلیک بیرون از مودال افزودن به برنامه.
       if (showAddModal &&
         (document.getElementById('add-to-workout-modal-container') && !document.getElementById('add-to-workout-modal-container')?.contains(event.target as Node))
       ) {
         setShowAddModal(false);
       }
+      // بررسی کلیک بیرون از مودال حذف.
       if (
         showDeleteModal &&
         deleteModalRef.current &&
@@ -87,6 +98,7 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
         setShowDeleteModal(false);
         setSessionIdToDelete(null);
       }
+      // بررسی کلیک بیرون از مودال ویرایش یادداشت‌ها.
       if (
         showEditNotesModal &&
         editNotesModalRef.current &&
@@ -96,21 +108,25 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
       }
     };
 
+    // اضافه کردن event listenerها در صورت باز بودن هر یک از مودال‌ها.
     if (showAddModal || showDeleteModal || showEditNotesModal) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden'; // جلوگیری از اسکرول پس‌زمینه.
       document.addEventListener('keydown', handleEscape);
       document.addEventListener('mousedown', handleClickOutside);
     }
 
+    // پاکسازی event listenerها هنگام unmount شدن یا بسته شدن مودال‌ها.
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = ''; // فعال کردن مجدد اسکرول پس‌زمینه.
       document.removeEventListener('keydown', handleEscape);
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showAddModal, showDeleteModal, showEditNotesModal, handleCancelEditNotes]);
 
-  const exercise = exercisesData.find(ex => ex.id === id); // استفاده از id که به عنوان prop دریافت شده
+  // پیدا کردن تمرین بر اساس id که به عنوان prop دریافت شده است.
+  const exercise = exercisesData.find(ex => ex.id === id);
 
+  // اگر تمرین یافت نشد، پیام "تمرین یافت نشد" را نمایش می‌دهد.
   if (!exercise) {
     return (
       <div className="max-w-[35rem] mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -130,6 +146,7 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
     );
   }
 
+  // فیلتر کردن جلساتی که شامل این تمرین هستند.
   const sessionsWithExercise = userData.sessions
     .map(session => {
       const sessionExercise = session.exercises.find(ex => ex.exerciseId === exercise.id);
@@ -137,6 +154,7 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
     })
     .filter(Boolean) as { session: WorkoutSession; sessionExercise: SessionExercise }[];
 
+  // تابع برای افزودن تمرین به جلسات انتخاب شده.
   const handleAddToSessions = (selectedSessionsData: { sessionId: string; notes: string }[]) => {
     const updatedSessions = userData.sessions.map(session => {
       const selectedSessionInfo = selectedSessionsData.find(s => s.sessionId === session.id);
@@ -161,6 +179,7 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
     handleUpdateUserData({ sessions: updatedSessions });
   };
 
+  // تابع برای ایجاد جلسه جدید.
   const handleCreateNewSession = (sessionName: string) => {
     const newSession: WorkoutSession = {
       id: Date.now().toString(),
@@ -174,11 +193,13 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
     });
   };
 
+  // تابع برای حذف تمرین از یک جلسه خاص.
   const handleRemoveFromSession = (sessionId: string) => {
     setSessionIdToDelete(sessionId);
     setShowDeleteModal(true);
   };
 
+  // تابع برای تأیید حذف تمرین از جلسه.
   const confirmRemoveFromSession = () => {
     if (sessionIdToDelete) {
       const updatedSessions = userData.sessions.map(session => {
@@ -197,12 +218,14 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
     }
   };
 
+  // تابع برای باز کردن مودال ویرایش یادداشت‌ها.
   const handleEditNotes = (sessionId: string, notes: string | undefined) => {
     setSessionBeingEdited(sessionId);
     setCurrentNotes(notes || '');
     setShowEditNotesModal(true);
   };
 
+  // تابع برای ذخیره یادداشت‌های ویرایش شده.
   const handleSaveNotes = () => {
     if (sessionBeingEdited && exercise) {
       const updatedSessions = userData.sessions.map(session => {
@@ -225,26 +248,31 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
     }
   };
 
+  // مدیریت کلید Enter در ورودی ویرایش یادداشت‌ها.
   const handleEditNotesInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       handleSaveNotes();
     }
   };
 
+  // تابع برای دریافت نام تصویر عضله بر اساس نام نمایشی.
   const getMuscleImageName = (muscleDisplayName: string): string => {
     const muscle = muscleOptions.find(opt => opt.displayName === muscleDisplayName || opt.filterNames.includes(muscleDisplayName));
     return muscle ? muscle.imageName : 'placeholder.webp';
   };
 
+  // تابع برای دریافت نام تصویر تجهیزات بر اساس نام نمایشی.
   const getEquipmentImageName = (equipmentDisplayName: string): string => {
     const equipment = equipmentOptionsList.find(opt => opt.displayName === equipmentDisplayName || opt.filterName === equipmentDisplayName);
     return equipment ? equipment.imageName : 'placeholder.webp';
   };
 
+  // تابع برای ناوبری به صفحه اصلی با فیلتر عضله.
   const handleMuscleClick = (muscleName: string) => {
     router.push(`/?filterField=targetMuscles&filterValue=${encodeURIComponent(muscleName)}`);
   };
 
+  // تابع برای ناوبری به صفحه اصلی با فیلتر تجهیزات.
   const handleEquipmentClick = (equipmentName: string) => {
     router.push(`/?filterField=equipment&filterValue=${encodeURIComponent(equipmentName)}`);
   };
@@ -383,14 +411,17 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
         </div>
       </div>
 
-      <AddToWorkoutModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        sessions={userData.sessions}
-        onAddToSessions={handleAddToSessions}
-        onCreateNewSession={handleCreateNewSession}
-        exerciseId={exercise.id}
-      />
+      {/* رندر AddToWorkoutModal فقط در صورت نیاز */}
+      {showAddModal && (
+        <AddToWorkoutModal
+          isOpen={showAddModal}
+          onClose={() => setShowAddModal(false)}
+          sessions={userData.sessions}
+          onAddToSessions={handleAddToSessions}
+          onCreateNewSession={handleCreateNewSession}
+          exerciseId={exercise.id}
+        />
+      )}
 
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
