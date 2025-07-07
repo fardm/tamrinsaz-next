@@ -7,15 +7,11 @@ import Link from 'next/link';
 import { Plus, PanelRightOpen, PanelRightClose, Download, Upload, Trash2, HelpCircle, Bot } from 'lucide-react';
 import { SessionCard } from '../../components/SessionCard';
 import { exercisesData } from '../../data/exercises';
-import { UserData, WorkoutSession } from '../../types';
+import { UserData, WorkoutSession, SessionExercise } from '../../types';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
-// import { NewSessionModal } from '../../components/NewSessionModal'; // ایمپورت اصلی حذف شد
-// import { ImportProgramModal } from '../../components/ImportProgramModal'; // ایمپورت اصلی حذف شد
-// import { ExportProgramModal } from '../../components/ExportProgramModal'; // ایمپورت اصلی حذف شد
 import { saveUserData, clearUserData } from '../../utils/storage';
 
 // ایمپورت پویا برای مودال‌ها
-// این مودال‌ها فقط زمانی که showNewSessionModal، showImportProgramModal یا showExportProgramModal true شوند، بارگذاری خواهند شد.
 import dynamic from 'next/dynamic';
 
 const NewSessionModal = dynamic(() => import('../../components/NewSessionModal').then(mod => mod.NewSessionModal), {
@@ -63,7 +59,7 @@ export default function MyWorkoutsPage() {
     if (typeof window !== 'undefined') {
       setIsSidebarOpen(window.matchMedia('(min-width: 768px)').matches);
     }
-  }, []); // با []، این useEffect فقط یک بار پس از اولین رندر کلاینت اجرا می‌شود.
+  }, []); // با [], این useEffect فقط یک بار پس از اولین رندر کلاینت اجرا می‌شود.
 
 
   const sidebarRef = useRef<HTMLDivElement>(null); // رفرنس برای سایدبار.
@@ -212,6 +208,21 @@ export default function MyWorkoutsPage() {
     );
     handleUpdateUserData({ sessions: updatedSessions });
     showToast('نام جلسه با موفقیت تغییر یافت', 'success'); // نمایش پیام موفقیت.
+  };
+
+  // تابع جدید برای به‌روزرسانی ترتیب تمرینات در یک جلسه
+  const handleReorderExercises = (sessionId: string, reorderedExercises: SessionExercise[]) => {
+    const updatedSessions = userData.sessions.map(session => {
+      if (session.id === sessionId) {
+        return {
+          ...session,
+          exercises: reorderedExercises
+        };
+      }
+      return session;
+    });
+    handleUpdateUserData({ sessions: updatedSessions });
+    showToast('ترتیب تمرینات با موفقیت ذخیره شد', 'success'); // نمایش پیام موفقیت
   };
 
   // تابع برای نمایش توست.
@@ -440,6 +451,7 @@ export default function MyWorkoutsPage() {
                   onRemoveExercise={handleRemoveExercise}
                   onDeleteSession={handleDeleteSession}
                   onRenameSession={handleRenameSession}
+                  onReorderExercises={handleReorderExercises} // ارسال پراپ جدید
                 />
               ))}
             </div>

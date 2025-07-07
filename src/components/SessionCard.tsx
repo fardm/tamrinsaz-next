@@ -2,8 +2,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { WorkoutSession, Exercise } from '../types';
-import { Trash2, SquarePen, X } from 'lucide-react'; // حذف Check از ایمپورت
+import { WorkoutSession, Exercise, SessionExercise } from '../types';
+import { Trash2, SquarePen, X, GripVertical } from 'lucide-react'; // اضافه کردن GripVertical
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -14,6 +14,8 @@ interface SessionCardProps {
   onRemoveExercise: (sessionId: string, exerciseId: string) => void;
   onDeleteSession: (sessionId: string) => void;
   onRenameSession: (sessionId: string, newName: string) => void;
+  // پراپ جدید برای به‌روزرسانی ترتیب تمرینات
+  onReorderExercises: (sessionId: string, reorderedExercises: SessionExercise[]) => void;
 }
 
 export function SessionCard({
@@ -22,7 +24,8 @@ export function SessionCard({
   onToggleExercise,
   onRemoveExercise,
   onDeleteSession,
-  onRenameSession
+  onRenameSession,
+  onReorderExercises // دریافت پراپ جدید
 }: SessionCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(session.name);
@@ -32,6 +35,11 @@ export function SessionCard({
   const editModalRef = useRef<HTMLDivElement>(null);
   const deleteExerciseModalRef = useRef<HTMLDivElement>(null);
   const deleteSessionModalRef = useRef<HTMLDivElement>(null);
+
+  // وضعیت برای ذخیره exerciseId در حال کشیدن
+  const dragItem = useRef<number | null>(null);
+  // وضعیت برای ذخیره exerciseId که آیتم روی آن کشیده شده
+  const dragOverItem = useRef<number | null>(null);
 
   const completedCount = session.exercises.filter(ex => ex.completed).length;
   const totalCount = session.exercises.length;
@@ -84,6 +92,57 @@ export function SessionCard({
     if (event.key === 'Enter') {
       handleSaveEdit();
     }
+  };
+
+  // مدیریت رویدادهای کشیدن و رها کردن
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
+    dragItem.current = index;
+    // اضافه کردن کلاس برای نمایش بصری آیتم در حال کشیدن
+    e.currentTarget.classList.add('opacity-50');
+  };
+
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>, index: number) => {
+    dragOverItem.current = index;
+    // اضافه کردن کلاس برای نمایش بصری محل رها کردن
+    e.currentTarget.classList.add('border-blue-500', 'border-2');
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    // حذف کلاس‌های بصری هنگام ترک محل
+    e.currentTarget.classList.remove('border-blue-500', 'border-2');
+  };
+
+  const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
+    // حذف کلاس opacity از آیتم در حال کشیدن
+    e.currentTarget.classList.remove('opacity-50');
+    // اطمینان از حذف کلاس border از تمام آیتم‌ها
+    const allExerciseCards = document.querySelectorAll('.exercise-card-draggable');
+    allExerciseCards.forEach(card => card.classList.remove('border-blue-500', 'border-2'));
+
+    dragItem.current = null;
+    dragOverItem.current = null;
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault(); // جلوگیری از رفتار پیش‌فرض مرورگر
+    // حذف کلاس‌های بصری هنگام رها کردن
+    e.currentTarget.classList.remove('border-blue-500', 'border-2');
+
+    if (dragItem.current === null || dragOverItem.current === null) return;
+
+    const newExercises = [...session.exercises];
+    const draggedExercise = newExercises[dragItem.current];
+
+    // حذف آیتم کشیده شده از مکان قبلی
+    newExercises.splice(dragItem.current, 1);
+    // اضافه کردن آیتم کشیده شده به مکان جدید
+    newExercises.splice(dragOverItem.current, 0, draggedExercise);
+
+    // به‌روزرسانی ترتیب تمرینات در کامپوننت والد
+    onReorderExercises(session.id, newExercises);
+
+    dragItem.current = null;
+    dragOverItem.current = null;
   };
 
   useEffect(() => {
@@ -262,69 +321,84 @@ export function SessionCard({
       </div>
 
       <div className="space-y-3">
-        {session.exercises.map((sessionExercise) => {
-          const exercise = exercises.find(ex => ex.id === sessionExercise.exerciseId);
-          if (!exercise) return null;
+        {session.exercises.length > 0 ? (
+          session.exercises.map((sessionExercise, index) => {
+            const exercise = exercises.find(ex => ex.id === sessionExercise.exerciseId);
+            if (!exercise) return null;
 
-          return (
-            <div
-              key={sessionExercise.exerciseId}
-              className="relative flex items-center space-x-3 space-x-reverse p-3 bg-gray-50 dark:bg-gray-700 rounded-lg flex-wrap"
-            >
-              <button
-                onClick={() => handleOpenDeleteExerciseModal(exercise.id)}
-                className="left-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+            return (
+              <div
+                key={sessionExercise.exerciseId} // استفاده از exerciseId به عنوان key
+                className="exercise-card-draggable relative flex items-center space-x-3 space-x-reverse p-3 bg-gray-50 dark:bg-gray-700 rounded-lg flex-wrap"
+                draggable
+                onDragStart={(e) => handleDragStart(e, index)}
+                onDragOver={(e) => e.preventDefault()} // ضروری برای فعال کردن drop
+                onDragEnter={(e) => handleDragEnter(e, index)}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onDragEnd={handleDragEnd}
               >
-                <X className="h-4 w-4" />
-              </button>
+                {/* آیکون GripVertical برای قابلیت درگ */}
+                <GripVertical className="h-5 w-5 text-gray-400 cursor-grab flex-shrink-0" />
 
-              <div className="relative w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden">
-                <Image
-                  src={getImageUrl(exercise.image)}
-                  alt={exercise.name}
-                  fill
-                  sizes="48px"
-                  style={{ objectFit: 'cover' }}
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = defaultImage;
-                  }}
-                />
-              </div>
-
-              <div className="flex-1 min-w-0 mt-1 sm:mt-0">
-                <Link
-                  href={`/exercise/${exercise.id}`}
-                  className="text-sm text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 break-words"
+                <button
+                  onClick={() => handleOpenDeleteExerciseModal(exercise.id)}
+                  className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 flex-shrink-0"
                 >
-                  {exercise.name}
-                </Link>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {exercise.targetMuscles.length > 2 && (
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      +{exercise.targetMuscles.length - 2}
-                    </span>
+                  <X className="h-4 w-4" />
+                </button>
+
+                <div className="relative w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden">
+                  <Image
+                    src={getImageUrl(exercise.image)}
+                    alt={exercise.name}
+                    fill
+                    sizes="48px"
+                    style={{ objectFit: 'cover' }}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = defaultImage;
+                    }}
+                  />
+                </div>
+
+                <div className="flex-1 min-w-0 mt-1 sm:mt-0">
+                  <Link
+                    href={`/exercise/${exercise.id}`}
+                    className="text-sm text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 break-words"
+                  >
+                    {exercise.name}
+                  </Link>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {exercise.targetMuscles.length > 0 && (
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {exercise.targetMuscles.join(', ')}
+                      </span>
+                    )}
+                    {exercise.targetMuscles.length > 2 && (
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        +{exercise.targetMuscles.length - 2}
+                      </span>
+                    )}
+                  </div>
+                  {sessionExercise.notes && (
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 break-words">
+                      {sessionExercise.notes}
+                    </p>
                   )}
                 </div>
-                {sessionExercise.notes && (
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 break-words">
-                    {sessionExercise.notes}
-                  </p>
-                )}
-              </div>
 
-              <div className="flex items-center ml-auto">
-                <input
-                  type="checkbox"
-                  checked={sessionExercise.completed}
-                  onChange={() => onToggleExercise(session.id, exercise.id)}
-                  className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                />
+                <div className="flex items-center ml-auto flex-shrink-0">
+                  <input
+                    type="checkbox"
+                    checked={sessionExercise.completed}
+                    onChange={() => onToggleExercise(session.id, exercise.id)}
+                    className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                </div>
               </div>
-            </div>
-          );
-        })}
-
-        {session.exercises.length === 0 && (
+            );
+          })
+        ) : (
           <p className="text-center text-gray-500 dark:text-gray-400 py-4">
             هنوز تمرینی اضافه نشده!
           </p>
