@@ -64,7 +64,7 @@ export default function RootLayout({
       </head>
       <body className={`bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white flex flex-col min-h-screen`}>
         <Header />
-        <main className="flex-grow container mx-auto p-4">
+        <main className="flex-grow container mx-auto p-1">
           {children}
         </main>
         <Footer />
