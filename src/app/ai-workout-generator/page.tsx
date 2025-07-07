@@ -98,7 +98,7 @@ export default function AIGenWorkoutPage() {
           </button>
         </div>
         <p className="text-gray-600 dark:text-gray-400 mb-4 text-right leading-relaxed">
-         4.  با این دستور یک کد JSON دریافت می‌کنید که از بخش "وارد کردن برنامه" می‌توانید آن را به سایت اضافه کنید.
+         4.  با این دستور یک کد JSON دریافت می‌کنید که از بخش «وارد کردن برنامه» می‌توانید آن را به سایت اضافه کنید.
         </p>
         <p className="text-gray-600 dark:text-gray-400 mb-4 text-right leading-relaxed">
           ℹ️ بر اساس نیاز خود می‌توانید تعداد جلسات، تمرین‌ها و تکرارها را در پرامپت تغییر دهید. اما ساختار خروجی حتما باید مانند کد نمونه باشد تا تمرین ساخته شده به سایت اضافه شود.
