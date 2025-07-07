@@ -43,7 +43,7 @@ const HomePageSearchParamHandler = ({ setFilters, filters, router, pathname }: {
       const decodedFilterValue = decodeURIComponent(filterValue); // دیکد کردن مقدار فیلتر.
       const newFilter: FilterRule = {
         id: Date.now().toString(), // تولید یک شناسه منحصر به فرد برای فیلتر.
-        field: filterField as 'equipment' | 'targetMuscles', // تعیین فیلد فیلتر.
+        field: filterField as 'equipment' | 'targetMuscles' | 'type', // تعیین فیلد فیلتر. 'type' اضافه شد
         values: [decodedFilterValue], // تعیین مقدار فیلتر.
       };
 
@@ -101,6 +101,7 @@ export default function HomePage() {
         exercise.name.toLowerCase().includes(searchLower) ||
         exercise.targetMuscles.some(muscle => muscle.toLowerCase().includes(searchLower)) ||
         exercise.equipment.toLowerCase().includes(searchLower) ||
+        (exercise.type && exercise.type.toLowerCase().includes(searchLower)) || // فیلتر بر اساس نوع تمرین
         (exercise.otherNames && exercise.otherNames.toLowerCase().includes(searchLower))
       );
     }
@@ -113,6 +114,8 @@ export default function HomePage() {
             return filter.values.includes(exercise.equipment);
           } else if (filter.field === 'targetMuscles') {
             return exercise.targetMuscles.some(muscle => filter.values.includes(muscle));
+          } else if (filter.field === 'type') { // اعمال فیلتر برای نوع تمرین
+            return exercise.type && filter.values.includes(exercise.type);
           }
           return true;
         });
@@ -160,8 +163,19 @@ export default function HomePage() {
     };
   }, [hasMoreExercises, isLoading, loaderRef, setVisibleExerciseCount]);
 
+  // محاسبه تعداد فیلترهای فعال
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    filters.forEach(filter => {
+      // هر فیلتر می‌تواند شامل چندین مقدار باشد (مثلاً چندین عضله انتخاب شده).
+      // بنابراین، طول آرایه values را جمع می‌کنیم.
+      count += filter.values.length;
+    });
+    return count;
+  }, [filters]);
+
   // بررسی اینکه آیا فیلتر فعالی وجود دارد یا خیر.
-  const hasActiveFilters = filters.some(f => f.values.length > 0);
+  const hasActiveFilters = activeFilterCount > 0;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -203,7 +217,7 @@ export default function HomePage() {
           <span>فیلتر</span>
           {hasActiveFilters && (
             <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full">
-              {filters.length}
+              {activeFilterCount} {/* اینجا از activeFilterCount استفاده می‌شود */}
             </span>
           )}
         </button>

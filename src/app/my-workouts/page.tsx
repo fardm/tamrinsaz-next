@@ -54,13 +54,17 @@ export default function MyWorkoutsPage() {
   const [userData, setUserData] = useLocalStorage<UserData>('tamrinsaz-user-data', { sessions: [] }); // وضعیت داده‌های کاربر.
   const [activeTab, setActiveTab] = useLocalStorage<string>('workout-active-tab', 'all'); // وضعیت تب فعال (همه جلسات یا یک جلسه خاص).
 
+  // مقدار اولیه isSidebarOpen را همیشه false قرار می‌دهیم تا از Hydration Mismatch جلوگیری شود.
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // وضعیت باز یا بسته بودن سایدبار.
-  // useEffect برای تنظیم وضعیت اولیه سایدبار بر اساس اندازه صفحه.
+
+  // useEffect برای تنظیم وضعیت اولیه سایدبار بر اساس اندازه صفحه، فقط در سمت کلاینت.
   useEffect(() => {
+    // این کد فقط در محیط مرورگر اجرا می‌شود.
     if (typeof window !== 'undefined') {
       setIsSidebarOpen(window.matchMedia('(min-width: 768px)').matches);
     }
-  }, []);
+  }, []); // با []، این useEffect فقط یک بار پس از اولین رندر کلاینت اجرا می‌شود.
+
 
   const sidebarRef = useRef<HTMLDivElement>(null); // رفرنس برای سایدبار.
 
@@ -112,16 +116,23 @@ export default function MyWorkoutsPage() {
       }
     };
 
-    // اضافه کردن event listenerها در صورت باز بودن سایدبار یا هر مودالی.
-    if (isSidebarOpen || showNewSessionModal || showClearConfirm || showHelpModal || showExportProgramModal || showImportProgramModal) {
+    // بررسی اینکه آیا هر یک از مودال‌ها باز هستند.
+    const isAnyModalOpen = showNewSessionModal || showClearConfirm || showHelpModal || showExportProgramModal || showImportProgramModal;
+
+    // اعمال overflow: hidden فقط در صورت باز بودن مودال‌ها یا باز بودن سایدبار در موبایل.
+    if (isAnyModalOpen || (isSidebarOpen && isMobile())) {
       document.body.style.overflow = 'hidden'; // جلوگیری از اسکرول پس‌زمینه.
       document.addEventListener('keydown', handleEscape);
       document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.body.style.overflow = ''; // فعال کردن مجدد اسکرول پس‌زمینه.
+      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('mousedown', handleClickOutside);
     }
 
     // پاکسازی event listenerها هنگام unmount شدن یا بسته شدن.
     return () => {
-      document.body.style.overflow = ''; // فعال کردن مجدد اسکرول پس‌زمینه.
+      document.body.style.overflow = ''; // اطمینان از فعال بودن اسکرول در زمان cleanup.
       document.removeEventListener('keydown', handleEscape);
       document.removeEventListener('mousedown', handleClickOutside);
     };

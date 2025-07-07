@@ -70,6 +70,20 @@ export const equipmentOptionsList: EquipmentOption[] = [
   { id: 'bodyweight', displayName: 'بدون وسیله', filterName: 'بدون وسیله', imageName: 'bodyweight.webp' },
 ];
 
+// --- Exercise Type Options ---
+export interface ExerciseTypeOption {
+  id: string;
+  displayName: string;
+  filterName: string;
+  imageName: string;
+}
+
+export const exerciseTypeOptions: ExerciseTypeOption[] = [
+  { id: 'strength', displayName: 'قدرتی', filterName: 'قدرتی', imageName: 'strength.webp' }, 
+  { id: 'stretching', displayName: 'کششی', filterName: 'کششی', imageName: 'stretching.webp' }, 
+  { id: 'cardio', displayName: 'هوازی', filterName: 'هوازی', imageName: 'cardio.webp' }, 
+];
+
 
 interface FilterPanelProps {
   isOpen: boolean;
@@ -79,10 +93,11 @@ interface FilterPanelProps {
 }
 
 export function FilterPanel({ isOpen, onClose, currentFilters, onApplyFilters }: FilterPanelProps) {
-  const [activeTab, setActiveTab] = useState<'muscles' | 'equipment'>('muscles');
+  const [activeTab, setActiveTab] = useState<'muscles' | 'equipment' | 'type'>('muscles'); // 'type' به تب‌های فعال اضافه شد
   const [isAdvancedMode, setIsAdvancedMode] = useState(false);
   const [selectedMuscleIds, setSelectedMuscleIds] = useState<string[]>([]);
   const [selectedEquipmentIds, setSelectedEquipmentIds] = useState<string[]>([]);
+  const [selectedExerciseTypeIds, setSelectedExerciseTypeIds] = useState<string[]>([]); // وضعیت جدید برای نوع تمرین
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -108,6 +123,18 @@ export function FilterPanel({ isOpen, onClose, currentFilters, onApplyFilters }:
       } else {
         setSelectedEquipmentIds([]);
       }
+
+      // تنظیم وضعیت اولیه برای نوع تمرین
+      const typeFilter = currentFilters.find(f => f.field === 'type');
+      if (typeFilter) {
+        const initialSelected = exerciseTypeOptions.filter(option =>
+          typeFilter.values.includes(option.filterName)
+        ).map(option => option.id);
+        setSelectedExerciseTypeIds(initialSelected);
+      } else {
+        setSelectedExerciseTypeIds([]);
+      }
+
     }
 
     return () => {
@@ -181,6 +208,13 @@ export function FilterPanel({ isOpen, onClose, currentFilters, onApplyFilters }:
     );
   };
 
+  // تابع جدید برای مدیریت انتخاب نوع تمرین
+  const toggleExerciseTypeSelection = (typeId: string) => {
+    setSelectedExerciseTypeIds(prev =>
+      prev.includes(typeId) ? prev.filter(id => id !== typeId) : [...prev, typeId]
+    );
+  };
+
   const handleApplyFilters = () => {
     const newFilterRules: FilterRule[] = [];
 
@@ -217,6 +251,25 @@ export function FilterPanel({ isOpen, onClose, currentFilters, onApplyFilters }:
         values: uniqueEquipmentFilterValues,
       });
     }
+
+    // اضافه کردن فیلتر نوع تمرین
+    const tempExerciseTypeValues: string[] = [];
+    selectedExerciseTypeIds.forEach(id => {
+      const foundOption = exerciseTypeOptions.find(eto => eto.id === id);
+      if (foundOption && foundOption.filterName) {
+        tempExerciseTypeValues.push(foundOption.filterName);
+      }
+    });
+    const uniqueExerciseTypeFilterValues = Array.from(new Set(tempExerciseTypeValues));
+
+    if (uniqueExerciseTypeFilterValues.length > 0) {
+      newFilterRules.push({
+        id: 'type-filter',
+        field: 'type',
+        values: uniqueExerciseTypeFilterValues,
+      });
+    }
+
     onApplyFilters(newFilterRules);
     onClose();
   };
@@ -224,12 +277,13 @@ export function FilterPanel({ isOpen, onClose, currentFilters, onApplyFilters }:
   const handleClearAll = () => {
     setSelectedMuscleIds([]);
     setSelectedEquipmentIds([]);
+    setSelectedExerciseTypeIds([]); // پاک کردن انتخاب‌های نوع تمرین
     onApplyFilters([]);
   };
 
   if (!isOpen) return null;
 
-  const isClearAllDisabled = selectedMuscleIds.length === 0 && selectedEquipmentIds.length === 0;
+  const isClearAllDisabled = selectedMuscleIds.length === 0 && selectedEquipmentIds.length === 0 && selectedExerciseTypeIds.length === 0; // به‌روزرسانی شرط غیرفعال بودن
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
@@ -287,6 +341,17 @@ export function FilterPanel({ isOpen, onClose, currentFilters, onApplyFilters }:
               }`}
           >
             فیلتر وسایل
+          </button>
+          {/* تب جدید برای نوع تمرین */}
+          <button
+            onClick={() => setActiveTab('type')}
+            className={`flex-1 py-2 text-center text-sm font-medium rounded-t-lg transition-colors
+              ${activeTab === 'type'
+                ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+              }`}
+          >
+            نوع تمرین
           </button>
         </div>
 
@@ -370,6 +435,44 @@ export function FilterPanel({ isOpen, onClose, currentFilters, onApplyFilters }:
               ))}
             </div>
           )}
+
+          {/* بخش جدید برای فیلتر نوع تمرین */}
+          {activeTab === 'type' && (
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-4 mb-6">
+              {exerciseTypeOptions.map(typeOption => (
+                <div
+                  key={typeOption.id}
+                  className={`relative flex flex-col items-center p-2 border rounded-lg cursor-pointer transition-all duration-200
+                    ${selectedExerciseTypeIds.includes(typeOption.id)
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/40'
+                      : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                    }`}
+                  onClick={() => toggleExerciseTypeSelection(typeOption.id)}
+                >
+                  <div className="relative w-full max-w-[80px] aspect-square mb-2 rounded-lg bg-gray-200 dark:bg-gray-600 p-1 overflow-hidden">
+                    <Image
+                      src={getImageUrl(typeOption.imageName)}
+                      alt={typeOption.displayName}
+                      fill
+                      sizes="80px"
+                      style={{ objectFit: 'contain' }}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://placehold.co/100x100/e0e0e0/000000?text=No+Image';
+                      }}
+                    />
+                  </div>
+                  <span className="text-sm font-medium text-center text-gray-900 dark:text-white">
+                    {typeOption.displayName}
+                  </span>
+                  {selectedExerciseTypeIds.includes(typeOption.id) && (
+                    <div className="absolute top-1 right-1 bg-blue-600 rounded-full p-0.5">
+                      <Check className="h-3 w-3 text-white" />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="flex justify-center mt-6 flex-shrink-0">
@@ -397,3 +500,4 @@ export function FilterPanel({ isOpen, onClose, currentFilters, onApplyFilters }:
     </div>
   );
 }
+

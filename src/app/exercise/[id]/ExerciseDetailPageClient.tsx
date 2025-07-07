@@ -11,7 +11,7 @@ import { exercisesData } from '../../../data/exercises';
 // import { AddToWorkoutModal } from '../../../components/AddToWorkoutModal'; // ایمپورت اصلی حذف شد
 import { UserData, WorkoutSession, SessionExercise } from '../../../types';
 import { ImageTextDisplay } from '../../../components/ImageTextDisplay';
-import { muscleOptions, equipmentOptionsList } from '../../../components/FilterPanel';
+import { muscleOptions, equipmentOptionsList, exerciseTypeOptions } from '../../../components/FilterPanel'; // exerciseTypeOptions اضافه شد
 import { getUserData, saveUserData } from '../../../utils/storage';
 
 // ایمپورت پویا برای AddToWorkoutModal این مودال فقط زمانی که showAddModal true شود، بارگذاری خواهد شد.
@@ -267,6 +267,12 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
     return equipment ? equipment.imageName : 'placeholder.webp';
   };
 
+  // تابع جدید برای دریافت نام تصویر نوع تمرین
+  const getExerciseTypeImageName = (typeDisplayName: string): string => {
+    const typeOption = exerciseTypeOptions.find(opt => opt.displayName === typeDisplayName || opt.filterName === typeDisplayName);
+    return typeOption ? typeOption.imageName : 'placeholder.webp';
+  };
+
   // تابع برای ناوبری به صفحه اصلی با فیلتر عضله.
   const handleMuscleClick = (muscleName: string) => {
     router.push(`/?filterField=targetMuscles&filterValue=${encodeURIComponent(muscleName)}`);
@@ -275,6 +281,11 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
   // تابع برای ناوبری به صفحه اصلی با فیلتر تجهیزات.
   const handleEquipmentClick = (equipmentName: string) => {
     router.push(`/?filterField=equipment&filterValue=${encodeURIComponent(equipmentName)}`);
+  };
+
+  // تابع جدید برای ناوبری به صفحه اصلی با فیلتر نوع تمرین
+  const handleExerciseTypeClick = (typeName: string) => {
+    router.push(`/?filterField=type&filterValue=${encodeURIComponent(typeName)}`);
   };
 
   return (
@@ -338,6 +349,24 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
               )}
             </div>
           </div>
+
+          {/* بخش جدید برای نمایش نوع تمرین */}
+          {exercise.type && (
+            <div className="mb-8">
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1">
+                نوع تمرین
+              </h3>
+              <div className="flex flex-wrap justify-start">
+                <ImageTextDisplay
+                  text={exercise.type}
+                  imageName={getExerciseTypeImageName(exercise.type)}
+                  altText={exercise.type}
+                  onClick={handleExerciseTypeClick}
+                  filterValue={exercise.type}
+                />
+              </div>
+            </div>
+          )}
 
           {exercise.description && (
             <div className="mt-8">
@@ -513,3 +542,4 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
     </div>
   );
 }
+

@@ -4,6 +4,7 @@ export interface Exercise {
   image?: string;
   targetMuscles: string[];
   equipment: string;
+  type?: string; // فیلد جدید: نوع تمرین
   otherNames?: string;
   description?: string;
 }
@@ -27,7 +28,7 @@ export interface UserData {
 
 export interface FilterRule {
   id: string;
-  field: 'equipment' | 'targetMuscles';
+  field: 'equipment' | 'targetMuscles' | 'type'; // 'type' به فیلدهای فیلتر اضافه شد
   values: string[];
 }
 
@@ -36,3 +37,4 @@ export interface SortRule {
   field: 'name' | 'equipment' | 'targetMuscles';
   direction: 'asc' | 'desc';
 }
+
