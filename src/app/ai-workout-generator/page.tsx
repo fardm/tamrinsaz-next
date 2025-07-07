@@ -66,7 +66,7 @@ export default function AIGenWorkoutPage() {
 
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 flex flex-col">
         <p className="text-gray-600 dark:text-gray-400 mb-4 text-right leading-relaxed">
-          برای ساخت برنامه می‌توانید از هوش مصنوعی کمک بگیرید. با دستور زیر یک کد JSON دریافت می‌کنید که از بخش &quot;وارد کردن برنامه&quot; می‌توانید آن را به سایت اضافه کنید.
+          برای ساخت برنامه می‌توانید از هوش مصنوعی کمک بگیرید.
         </p>
         <p className="text-gray-600 dark:text-gray-400 mb-4 text-right leading-relaxed">
           1. یکی از سرویس‌های هوش مصنوعی را باز کنید. مدل‌هایی مثل ChatGPT و Gemini در این زمینه عملکرد خوبی دارند.</p>
@@ -74,7 +74,7 @@ export default function AIGenWorkoutPage() {
           2. فایل <a href="https://github.com/fardm/tamrinsaz-next/blob/main/src/data/exercises.ts" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300" target="_blank" rel="noopener noreferrer"> exercises.ts </a> را دانلود کرده و در محیط چت آپلود کنید.
         </p>
         <p className="text-gray-600 dark:text-gray-400 mb-4 text-right leading-relaxed">
-          3. سپس از پرامپت زیر استفاده کنید:
+          3. پرامپت زیر را کپی کرده و ارسال کنید. برای گرفتن نتیجه دقیق‌تر می‌توانید حالت Deep Think را فعال کنید.
         </p>
 
         <div className="relative flex-grow rounded-lg bg-gray-100 dark:bg-gray-700 p-4 mb-4">
@@ -97,7 +97,9 @@ export default function AIGenWorkoutPage() {
             )}
           </button>
         </div>
-
+        <p className="text-gray-600 dark:text-gray-400 mb-4 text-right leading-relaxed">
+         4.  با این دستور یک کد JSON دریافت می‌کنید که از بخش "وارد کردن برنامه" می‌توانید آن را به سایت اضافه کنید.
+        </p>
         <p className="text-gray-600 dark:text-gray-400 mb-4 text-right leading-relaxed">
           ℹ️ بر اساس نیاز خود می‌توانید تعداد جلسات، تمرین‌ها و تکرارها را در پرامپت تغییر دهید. اما ساختار خروجی حتما باید مانند کد نمونه باشد تا تمرین ساخته شده به سایت اضافه شود.
         </p>
