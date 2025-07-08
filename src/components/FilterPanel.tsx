@@ -27,7 +27,7 @@ export const muscleOptions: MuscleOption[] = [
   { id: 'anterior_deltoid', displayName: 'دلتوئید قدامی', filterNames: ['دلتوئید قدامی'], imageName: 'anterior_deltoid.webp', type: 'advanced' },
   { id: 'lateral_deltoid', displayName: 'دلتوئید میانی', filterNames: ['دلتوئید میانی'], imageName: 'lateral_deltoid.webp', type: 'advanced' },
   { id: 'posterior_deltoid', displayName: 'دلتوئید خلفی', filterNames: ['دلتوئید خلفی'], imageName: 'posterior_deltoid.webp', type: 'advanced' },
-  { id: 'lower_chest', displayName: 'زیر سینه', filterNames: ['زیرسینه'], imageName: 'lower_chest.webp', type: 'advanced' },
+  { id: 'lower_chest', displayName: 'زیر سینه', filterNames: ['زیر سینه'], imageName: 'lower_chest.webp', type: 'advanced' },
   { id: 'upper_chest', displayName: 'بالا سینه', filterNames: ['بالا سینه'], imageName: 'upper_chest.webp', type: 'advanced' },
   { id: 'upper_abs', displayName: 'بالا شکم', filterNames: ['بالا شکم'], imageName: 'upper_abs.webp', type: 'advanced' },
   { id: 'lower_abs', displayName: 'زیر شکم', filterNames: ['زیر شکم'], imageName: 'lower_abs.webp', type: 'advanced' },
