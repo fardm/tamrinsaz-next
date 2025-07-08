@@ -4,7 +4,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Moon, Sun, Menu, Bot, ClipboardList, X, Github, Send } from 'lucide-react';
+import { Moon, Sun, Menu, Bot, ClipboardList, X, Github, Send, Heart } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 
 export function Header() {
@@ -67,6 +67,15 @@ export function Header() {
               </button>
             </Link>
 
+            <a href="https://coffeete.ir/ifard" target="_blank" rel="noopener noreferrer">
+              <button
+                className="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center space-x-2 space-x-reverse"
+                aria-label="حمایت مالی"
+              >
+                <Heart className="h-5 w-5" />
+                <span>حمایت مالی</span>
+              </button>
+            </a>
             <button
               onClick={toggleTheme}
               className="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
@@ -147,6 +156,18 @@ export function Header() {
               </div>
 
               <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+
+                <a
+                  href="https://coffeete.ir/ifard"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setShowMobileMenu(false)}
+                  className={getMenuItemClass('/donate')}
+                >
+                  <Heart className="h-5 w-5" />
+                  <span>حمایت مالی</span>
+                </a>
+
                 <div className="flex justify-start space-x-3 space-x-reverse mt-4 px-4 pb-4">
                   <a
                     href="https://github.com/fardm"
