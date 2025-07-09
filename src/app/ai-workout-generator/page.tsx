@@ -28,33 +28,17 @@ export default function AIGenWorkoutPage() {
       "id": "1",
       "name": "جلسه 1",
       "exercises": [
-        {
-          "exerciseId": "46",
-          "completed": false,
-          "notes": "10 × 3"
-        },
-        {
-          "exerciseId": "10",
-          "completed": false,
-          "notes": "15 × 3"
-        }
+        { "exerciseId": "46", "completed": false, "notes": "10 × 3" },
+        { "exerciseId": "10", "completed": false, "notes": "15 × 3" }
       ],
       "createdAt": "2025-07-01T14:00:00.000Z"
     },
-    {
+    { 
       "id": "2",
       "name": "جلسه 2",
       "exercises": [
-        {
-          "exerciseId": "2",
-          "completed": false,
-          "notes": "10 × 3"
-        },
-        {
-          "exerciseId": "1",
-          "completed": false,
-          "notes": "10 × 4"
-        }
+        { "exerciseId": "2", "completed": false, "notes": "10 × 3" },
+        { "exerciseId": "1", "completed": false, "notes": "10 × 4" }
       ],
       "createdAt": "2025-07-01T15:00:00.000Z"
     }
