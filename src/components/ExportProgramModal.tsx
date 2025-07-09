@@ -70,7 +70,7 @@ export function ExportProgramModal({ isOpen, onClose, userData, showToast }: Exp
       >
         <div className="flex justify-between items-center mb-4 flex-shrink-0">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center space-x-2 space-x-reverse">
-            <Download className="h-5 w-5 text-gray-700 dark:text-gray-300" /> {/* Download icon added */}
+            <Download className="h-5 w-5 text-gray-700 dark:text-gray-300" />
             <span>دانلود برنامه</span>
           </h3>
           <button

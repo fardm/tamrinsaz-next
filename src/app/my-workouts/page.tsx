@@ -64,16 +64,16 @@ export default function MyWorkoutsPage() {
 
   const sidebarRef = useRef<HTMLDivElement>(null); // رفرنس برای سایدبار.
 
-  const [showNewSessionModal, setShowNewSessionModal] = useState(false); // وضعیت نمایش مودال ایجاد جلسه جدید.
-  const [showClearConfirm, setShowClearConfirm] = useState(false); // وضعیت نمایش مودال تأیید حذف همه داده‌ها.
-  const [showHelpModal, setShowHelpModal] = useState(false); // وضعیت نمایش مودال راهنما.
-  const [showExportProgramModal, setShowExportProgramModal] = useState(false); // وضعیت نمایش مودال اکسپورت برنامه.
-  const [showImportProgramModal, setShowImportProgramModal] = useState(false); // وضعیت نمایش مودال ایمپورت برنامه.
-  const [toastMessage, setToastMessage] = useState<string | null>(null); // پیام توست (Toast).
-  const [toastType, setToastType] = useState<'success' | 'delete' | null>(null); // نوع توست (موفقیت یا حذف).
+  const [showNewSessionModal, setShowNewSessionModal] = useState(false); 
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false); 
+  const [showExportProgramModal, setShowExportProgramModal] = useState(false);
+  const [showImportProgramModal, setShowImportProgramModal] = useState(false); 
+  const [toastMessage, setToastMessage] = useState<string | null>(null); 
+  const [toastType, setToastType] = useState<'success' | 'delete' | null>(null);
 
-  const clearModalRef = useRef<HTMLDivElement>(null); // رفرنس برای مودال تأیید حذف.
-  const helpModalRef = useRef<HTMLDivElement>(null); // رفرنس برای مودال راهنما.
+  const clearModalRef = useRef<HTMLDivElement>(null); 
+  const helpModalRef = useRef<HTMLDivElement>(null); 
 
   // تابع برای به‌روزرسانی داده‌های کاربر و ذخیره آن‌ها در localStorage.
   const handleUpdateUserData = (newData: UserData) => {
@@ -98,15 +98,12 @@ export default function MyWorkoutsPage() {
     };
 
     const handleClickOutside = (event: MouseEvent) => {
-      // بستن سایدبار در موبایل با کلیک بیرون.
       if (isMobile() && sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
         setIsSidebarOpen(false);
       }
-      // بستن مودال تأیید حذف با کلیک بیرون.
       if (clearModalRef.current && !clearModalRef.current.contains(event.target as Node)) {
         setShowClearConfirm(false);
       }
-      // بستن مودال راهنما با کلیک بیرون.
       if (helpModalRef.current && !helpModalRef.current.contains(event.target as Node)) {
         setShowHelpModal(false);
       }
@@ -507,8 +504,9 @@ export default function MyWorkoutsPage() {
             ref={clearModalRef}
             className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4"
           >
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              حذف برنامه
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center space-x-2 space-x-reverse">
+              <Trash2 className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+              <span>حذف برنامه</span>
             </h3>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
               با حذف برنامه تمامی جلسات و تمرینات شما حذف خواهد شد. این عمل قابل بازگشت نیست.
@@ -531,15 +529,15 @@ export default function MyWorkoutsPage() {
         </div>
       )}
 
-      {/* مودال راهنما (Help Modal) */}
       {showHelpModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div
             ref={helpModalRef}
             className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4"
           >
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              راهنما
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center space-x-2 space-x-reverse">
+              <HelpCircle className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+              <span>راهنما</span>
             </h3>
             <p className="text-gray-600 dark:text-gray-400 mb-6 text-right">
               این سایت یک سایت استاتیک است و امکان ثبت‌نام یا ذخیره‌سازی دائمی اطلاعات شما را ندارد.

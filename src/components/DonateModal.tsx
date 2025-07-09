@@ -1,7 +1,7 @@
 "use client"; // This line makes this a Client Component.
 
 import React, { useEffect, useRef } from 'react';
-import { X, CreditCard } from 'lucide-react';
+import { X, CreditCard, Heart } from 'lucide-react';
 
 interface DonateModalProps {
   isOpen: boolean; // Controls whether the modal is open or closed
@@ -53,8 +53,9 @@ export function DonateModal({ isOpen, onClose }: DonateModalProps) {
       >
         {/* Modal Header */}
         <div className="flex justify-between items-center mb-4 flex-shrink-0">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            حمایت مالی
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center space-x-2 space-x-reverse">
+            <Heart className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+            <span>حمایت مالی</span>
           </h3>
           {/* Close button */}
           <button
@@ -83,7 +84,7 @@ export function DonateModal({ isOpen, onClose }: DonateModalProps) {
             <span>پرداخت با سایت کافیته</span>
           </a>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-            پرداخت ریالی از طریق کارت‌های بانکی
+            پرداخت ریالی با کارت‌های بانکی از طریق درگاه زرین پال
           </p>
         </div>
       </div>
