@@ -1,8 +1,7 @@
-// src/components/DonateModal.tsx
 "use client"; // This line makes this a Client Component.
 
 import React, { useEffect, useRef } from 'react';
-import { X, Banknote, CreditCard } from 'lucide-react'; // Import the close and Banknote icons
+import { X, CreditCard } from 'lucide-react';
 
 interface DonateModalProps {
   isOpen: boolean; // Controls whether the modal is open or closed
@@ -80,7 +79,7 @@ export function DonateModal({ isOpen, onClose }: DonateModalProps) {
             rel="noopener noreferrer" // Security best practice for target="_blank"
             className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors text-bases shadow-md hover:shadow-lg flex items-center justify-center space-x-2 space-x-reverse" // Added flex, items-center, justify-center, space-x-2, space-x-reverse
           >
-            <CreditCard className="h-5 w-5" /> {/* Banknote icon added here */}
+            <CreditCard className="h-5 w-5" />
             <span>پرداخت با سایت کافیته</span>
           </a>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Moon, Sun, Menu, Bot, ClipboardList, X, Github, Send, Heart } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
-import { DonateModal } from './DonateModal'; // Import the new DonateModal component
+import { DonateModal } from './DonateModal';
 
 export function Header() {
   // Use the isDark and toggleTheme from the new useTheme hook
@@ -30,8 +30,6 @@ export function Header() {
       if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
         setShowMobileMenu(false);
       }
-      // The DonateModal handles its own outside clicks, but it's good to ensure
-      // no conflicting behavior if both were open (though they shouldn't be).
     };
 
     // Add event listeners if either the mobile menu or support modal is open
@@ -219,7 +217,6 @@ export function Header() {
         </div>
       </div>
 
-      {/* Render the DonateModal component */}
       <DonateModal
         isOpen={showSupportModal} // Pass the state to control modal visibility
         onClose={() => setShowSupportModal(false)} // Pass a function to close the modal
