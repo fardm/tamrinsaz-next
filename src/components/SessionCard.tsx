@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { WorkoutSession, Exercise, SessionExercise } from '../types';
-import { Trash2, SquarePen, X, GripVertical } from 'lucide-react'; 
+import { Trash2, SquarePen, GripVertical, Eraser } from 'lucide-react'; 
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -210,12 +210,14 @@ export function SessionCard({
         <div className="flex items-center space-x-2 space-x-reverse">
           <button
             onClick={() => setIsEditing(true)}
+            title="ویرایش جلسه"
             className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
           >
             <SquarePen className="h-4 w-4" />
           </button>
           <button
             onClick={handleOpenDeleteSessionModal}
+            title="حذف جلسه"
             className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
           >
             <Trash2 className="h-4 w-4" />
@@ -390,9 +392,10 @@ export function SessionCard({
 
                   <button
                     onClick={() => handleOpenDeleteExerciseModal(exercise.id)}
+                    title="حذف تمرین"
                     className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 flex-shrink-0"
                   >
-                    <X className="h-4 w-4" />
+                    <Eraser className="h-4 w-4" />
                   </button>
                 </div>
               </React.Fragment>
