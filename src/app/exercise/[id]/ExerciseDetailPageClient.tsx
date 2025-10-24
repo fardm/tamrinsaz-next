@@ -260,7 +260,7 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
                   <h2 className="text-base font-semibold text-gray-900 dark:text-white">نوع تمرین:</h2>
                   <div className="flex flex-wrap gap-2">
                     <button
-                      onClick={() => handleExerciseTypeClick(exercise.type)}
+                      onClick={() => handleExerciseTypeClick(exercise.type!)}
                       className="text-blue-800 hover:text-blue-500 dark:text-blue-200 dark:hover:text-blue-100 bg-blue-100 hover:bg-blue-50 dark:bg-blue-900/40 hover:dark:bg-blue-800/70 rounded-full px-3"
                     >
                       {exercise.type}
