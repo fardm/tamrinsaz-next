@@ -8,7 +8,7 @@ import { ArrowRight, Plus, Check, X, SquarePen } from 'lucide-react';
 import { exercisesData } from '../../../data/exercises';
 import dynamic from 'next/dynamic';
 import { UserData, WorkoutSession, SessionExercise } from '../../../types';
-import { muscleOptions, equipmentOptionsList, exerciseTypeOptions } from '../../../components/FilterPanel';
+// import { muscleOptions, equipmentOptionsList, exerciseTypeOptions } from '../../../components/FilterPanel';
 import { getUserData, saveUserData } from '../../../utils/storage';
 
 const AddToWorkoutModal = dynamic(() => import('../../../components/AddToWorkoutModal').then(mod => mod.AddToWorkoutModal), { ssr: false });
