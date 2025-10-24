@@ -8,7 +8,6 @@ import { ArrowRight, Plus, Check, X, SquarePen } from 'lucide-react';
 import { exercisesData } from '../../../data/exercises';
 import dynamic from 'next/dynamic';
 import { UserData, WorkoutSession, SessionExercise } from '../../../types';
-import { ImageTextDisplay } from '../../../components/ImageTextDisplay';
 import { muscleOptions, equipmentOptionsList, exerciseTypeOptions } from '../../../components/FilterPanel';
 import { getUserData, saveUserData } from '../../../utils/storage';
 
@@ -201,22 +200,7 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
     }
   };
 
-  // Image and navigation helpers
-  const getMuscleImageName = (muscleDisplayName: string): string => {
-    const muscle = muscleOptions.find(opt => opt.displayName === muscleDisplayName || opt.filterNames.includes(muscleDisplayName));
-    return muscle ? muscle.imageName : 'placeholder.webp';
-  };
-
-  const getEquipmentImageName = (equipmentDisplayName: string): string => {
-    const equipment = equipmentOptionsList.find(opt => opt.displayName === equipmentDisplayName || opt.filterName === equipmentDisplayName);
-    return equipment ? equipment.imageName : 'placeholder.webp';
-  };
-
-  const getExerciseTypeImageName = (typeDisplayName: string): string => {
-    const typeOption = exerciseTypeOptions.find(opt => opt.displayName === typeDisplayName || opt.filterName === typeDisplayName);
-    return typeOption ? typeOption.imageName : 'placeholder.webp';
-  };
-
+  // Navigation helpers
   const handleMuscleClick = (muscleName: string) => {
     router.push(`/?filterField=targetMuscles&filterValue=${encodeURIComponent(muscleName)}`);
   };
@@ -231,54 +215,61 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
 
   // Render
   return (
-    <main className="grid grid-cols-1 md:grid-cols-6 gap-4 md:w-[70vw] mx-auto my-8 px-4">
+    <main className="grid grid-cols-1 md:grid-cols-6 gap-6 md:w-[65vw] mx-auto my-8 px-4">
       {/* Main Content */}
-      <div className="col-span-1 md:col-span-4 rounded-lg grid gap-3">
-        {/* Title & Details */}
+      <div className="col-span-1 md:col-span-4 rounded-lg grid gap-6">
+        {/* Title */}
         <div className="border rounded-lg p-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{exercise.name}</h1>
           {exercise.otherNames && (
             <p className="text-gray-600 dark:text-gray-400 mb-4">{exercise.otherNames}</p>
           )}
-          <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-1">عضلات درگیر:</h2>
-          <div className="flex flex-wrap justify-start gap-4 mb-4">
-            {exercise.targetMuscles.map((muscle, index) => (
-              <ImageTextDisplay
-                key={index}
-                text={muscle}
-                imageName={getMuscleImageName(muscle)}
-                altText={muscle}
-                onClick={handleMuscleClick}
-                filterValue={muscle}
-              />
-            ))}
-          </div>
-          <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-1">وسایل مورد نیاز:</h2>
-          <div className="flex flex-wrap justify-start mb-4">
-            {exercise.equipment && (
-              <ImageTextDisplay
-                text={exercise.equipment}
-                imageName={getEquipmentImageName(exercise.equipment)}
-                altText={exercise.equipment}
-                onClick={handleEquipmentClick}
-                filterValue={exercise.equipment}
-              />
+
+          {/* Details */}
+          <div className="flex flex-col divide-y-2 divide-gray-200/10">
+            <div className="flex gap-2 py-4">
+              <h2 className="text-base font-semibold text-gray-900 dark:text-white">عضلات درگیر:</h2>
+              <div className="flex flex-wrap gap-2">
+                {exercise.targetMuscles.map((muscle, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleMuscleClick(muscle)}
+                    className="text-blue-800 hover:text-blue-500 dark:text-blue-200 dark:hover:text-blue-100 bg-blue-100 hover:bg-blue-50 dark:bg-blue-900/40 hover:dark:bg-blue-800/70 rounded-full px-3"
+                  >
+                    {muscle}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="flex gap-2 py-4">
+              <h2 className="text-base font-semibold text-gray-900 dark:text-white">وسایل مورد نیاز:</h2>
+              <div className="flex flex-wrap gap-2">
+                {exercise.equipment && (
+                  <button
+                    onClick={() => handleEquipmentClick(exercise.equipment)}
+                    className="text-blue-800 hover:text-blue-500 dark:text-blue-200 dark:hover:text-blue-100 bg-blue-100 hover:bg-blue-50 dark:bg-blue-900/40 hover:dark:bg-blue-800/70 rounded-full px-3"
+                  >
+                    {exercise.equipment}
+                  </button>
+                )}
+              </div>
+            </div>
+            {exercise.type && (
+              <>
+                <div className="flex gap-2 py-4">
+                  <h2 className="text-base font-semibold text-gray-900 dark:text-white">نوع تمرین:</h2>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => handleExerciseTypeClick(exercise.type)}
+                      className="text-blue-800 hover:text-blue-500 dark:text-blue-200 dark:hover:text-blue-100 bg-blue-100 hover:bg-blue-50 dark:bg-blue-900/40 hover:dark:bg-blue-800/70 rounded-full px-3"
+                    >
+                      {exercise.type}
+                    </button>
+                  </div>
+                </div>
+              </>
             )}
           </div>
-          {exercise.type && (
-            <>
-              <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-1">نوع تمرین:</h2>
-              <div className="flex flex-wrap justify-start">
-                <ImageTextDisplay
-                  text={exercise.type}
-                  imageName={getExerciseTypeImageName(exercise.type)}
-                  altText={exercise.type}
-                  onClick={handleExerciseTypeClick}
-                  filterValue={exercise.type}
-                />
-              </div>
-            </>
-          )}
         </div>
 
         {/* Description */}
@@ -295,19 +286,19 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
 
       {/* Sidebar */}
       <div className="col-span-1 md:col-span-2 p-4 border rounded-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 h-fit">
-        <div className="relative aspect-video flex items-center justify-center rounded-lg overflow-hidden mb-4">
+        <div className="relative aspect-video flex items-center justify-center rounded-lg overflow-hidden mb-8">
           <Image
             src={getImageUrl(exercise.image)}
             alt={exercise.name}
             fill
             sizes="(max-width: 768px) 100vw, 20rem"
-            style={{ objectFit: 'contain' }}
+            // style={{ objectFit: 'contain' }}
             priority
           />
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="w-full bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2 space-x-reverse mb-4"
+          className="w-full bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2 space-x-reverse mb-8"
         >
           <Plus className="h-4 w-4" />
           <span>افزودن به برنامه</span>
