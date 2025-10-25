@@ -226,7 +226,7 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
           )}
 
           {/* Details */}
-          <div className="flex flex-col divide-y-2 divide-gray-200/10">
+          <div className="flex flex-col divide-y-2 divide-gray-100 dark:divide-gray-200/10">
             {/* عضلات درگیر */}
             <div className="flex gap-1 py-4">
               <h2 className="text-base font-semibold text-gray-900 dark:text-white">عضلات درگیر:</h2>
