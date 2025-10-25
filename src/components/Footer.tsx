@@ -1,6 +1,7 @@
 // src/components/Footer.tsx
 import React from 'react';
-import { Github, Send } from 'lucide-react';
+import { Github, Send, Heart } from 'lucide-react';
+import Link from 'next/link';
 
 export function Footer() {
   return (
@@ -11,11 +12,20 @@ export function Footer() {
             © 2025 TamrinSaz.
           </p>
           <div className="flex space-x-3">
+
+            <Link
+              href="/donate"
+              className="bg-red-50 dark:bg-red-400/20 hover:bg-red-100 dark:hover:bg-red-600/50 text-red-600 dark:text-red-200 hover:text-red-700 dark:hover:text-red-50 p-2 rounded-full transition-colors flex items-center"
+              title="حمایت مالی"
+            >
+              <Heart className="h-5 w-5" />
+              {/* <span>حمایت مالی</span> */}
+            </Link>
             <a
               href="https://github.com/fardm/tamrinsaz-next"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center space-x-2 space-x-reverse text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="bg-gray-100 dark:bg-gray-700/70 hover:bg-gray-200 dark:hover:bg-gray-600/80 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white p-2 rounded-full transition-colors flex items-center"
             >
               <Github className="h-5 w-5" />
               <span></span>
@@ -24,7 +34,7 @@ export function Footer() {
               href="https://t.me/ifard_ir/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center space-x-2 space-x-reverse text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="bg-gray-100 dark:bg-gray-700/70 hover:bg-gray-200 dark:hover:bg-gray-600/80 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white p-2 rounded-full transition-colors flex items-center"
             >
               <Send className="h-5 w-5" />
               <span></span>

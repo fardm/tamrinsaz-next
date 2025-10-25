@@ -6,53 +6,45 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Moon, Sun, Menu, Bot, ClipboardList, X, Github, Send, Heart } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
-import { DonateModal } from './DonateModal';
 
 export function Header() {
-  // Use the isDark and toggleTheme from the new useTheme hook
-  const { isDark, toggleTheme } = useTheme(); 
+  const { isDark, toggleTheme } = useTheme();
   const pathname = usePathname();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [showSupportModal, setShowSupportModal] = useState(false); // State to control the visibility of the support modal
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
-  // useEffect hook to handle closing modals/menus on Escape key press or outside clicks
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setShowMobileMenu(false); // Close mobile menu
-        setShowSupportModal(false); // Close support modal
+        setShowMobileMenu(false);
       }
     };
 
     const handleClickOutside = (event: MouseEvent) => {
-      // Check if the click is outside the mobile menu
       if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
         setShowMobileMenu(false);
       }
     };
 
-    // Add event listeners if either the mobile menu or support modal is open
-    if (showMobileMenu || showSupportModal) {
-      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    if (showMobileMenu) {
+      document.body.style.overflow = 'hidden';
       document.addEventListener('keydown', handleEscape);
       document.addEventListener('mousedown', handleClickOutside);
     }
 
-    // Cleanup function: remove event listeners and re-enable scrolling
     return () => {
       document.removeEventListener('keydown', handleEscape);
       document.removeEventListener('mousedown', handleClickOutside);
-      document.body.style.overflow = ''; // Ensure scrolling is re-enabled
+      document.body.style.overflow = '';
     };
-  }, [showMobileMenu, showSupportModal]); // Dependencies: re-run effect if these states change
+  }, [showMobileMenu]);
 
-  // Function to determine the CSS classes for navigation menu items
   const getMenuItemClass = (path: string) => {
     return `w-full px-4 py-2 text-right text-base font-medium flex items-center space-x-3 space-x-reverse transition-colors
-            ${pathname === path
-              ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
-              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+            ${
+              pathname === path
+                ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
             }`;
   };
 
@@ -78,15 +70,15 @@ export function Header() {
               </button>
             </Link>
 
-            <button
-              onClick={() => setShowSupportModal(true)} // Set state to true to open the modal
+
+            {/* <Link
+              href="/donate"
               className="bg-gray-100 dark:bg-gray-700/70 p-2 rounded-lg text-gray-700 hover:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-800 transition-colors flex items-center space-x-2 space-x-reverse"
-              aria-label="حمایت مالی"
             >
               <Heart className="h-5 w-5" />
               <span>حمایت مالی</span>
-            </button>
-            
+            </Link> */}
+
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
@@ -99,7 +91,6 @@ export function Header() {
 
           {/* Mobile Navigation Buttons */}
           <div className="flex items-center space-x-3 space-x-reverse md:hidden">
-            {/* Mobile Theme Toggle */}
             <button
               onClick={toggleTheme}
               className="bg-gray-100 dark:bg-gray-700/70 p-2 rounded-lg text-gray-700 hover:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-800 transition-colors"
@@ -107,7 +98,6 @@ export function Header() {
             >
               {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </button>
-            {/* Mobile Menu Toggle */}
             <button
               onClick={() => setShowMobileMenu(!showMobileMenu)}
               className="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors"
@@ -143,7 +133,6 @@ export function Header() {
 
             <nav className="flex justify-between flex-col space-y-1 px-4 overflow-y-auto flex-1">
               <div>
-                {/* Mobile Menu Links */}
                 <Link
                   href="/"
                   onClick={() => setShowMobileMenu(false)}
@@ -171,22 +160,19 @@ export function Header() {
                   <Bot className="h-5 w-5" />
                   <span>ساخت برنامه با AI</span>
                 </Link>
+
+                <Link
+                  href="/donate"
+                  onClick={() => setShowMobileMenu(false)}
+                  className={getMenuItemClass('/donate')}
+                >
+                  <Heart className="h-5 w-5" />
+                  <span>حمایت مالی</span>
+                </Link>
               </div>
 
               {/* Mobile Menu Footer Section */}
               <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <button
-                  onClick={() => {
-                    setShowSupportModal(true); // Open the modal
-                    setShowMobileMenu(false); // Close the mobile menu
-                  }}
-                  className={getMenuItemClass('/donate')} // Use a generic path for styling
-                >
-                  <Heart className="h-5 w-5" />
-                  <span>حمایت مالی</span>
-                </button>
-
-                {/* Social Media Links */}
                 <div className="flex justify-start space-x-3 space-x-reverse mt-4 px-4 pb-4">
                   <a
                     href="https://github.com/fardm"
@@ -214,11 +200,6 @@ export function Header() {
           </div>
         </div>
       </div>
-
-      <DonateModal
-        isOpen={showSupportModal} // Pass the state to control modal visibility
-        onClose={() => setShowSupportModal(false)} // Pass a function to close the modal
-      />
     </header>
   );
 }
