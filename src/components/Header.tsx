@@ -78,7 +78,6 @@ export function Header() {
               </button>
             </Link>
 
-            {/* "حمایت مالی" button now opens the modal */}
             <button
               onClick={() => setShowSupportModal(true)} // Set state to true to open the modal
               className="bg-gray-100 dark:bg-gray-700/70 p-2 rounded-lg text-gray-700 hover:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-800 transition-colors flex items-center space-x-2 space-x-reverse"
@@ -176,7 +175,6 @@ export function Header() {
 
               {/* Mobile Menu Footer Section */}
               <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                {/* "حمایت مالی" button in mobile menu, opens the modal */}
                 <button
                   onClick={() => {
                     setShowSupportModal(true); // Open the modal
