@@ -70,7 +70,7 @@ export function Header() {
           <nav className="hidden md:flex items-center space-x-3 space-x-reverse">
             <Link href="/my-workouts">
               <button
-                className="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center space-x-2 space-x-reverse"
+                className="bg-gray-100 dark:bg-gray-700/70 p-2 rounded-lg text-gray-700 hover:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-800 transition-colors flex items-center space-x-2 space-x-reverse"
                 aria-label="برنامه من"
               >
                 <ClipboardList className="h-5 w-5" />
@@ -81,7 +81,7 @@ export function Header() {
             {/* "حمایت مالی" button now opens the modal */}
             <button
               onClick={() => setShowSupportModal(true)} // Set state to true to open the modal
-              className="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center space-x-2 space-x-reverse"
+              className="bg-gray-100 dark:bg-gray-700/70 p-2 rounded-lg text-gray-700 hover:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-800 transition-colors flex items-center space-x-2 space-x-reverse"
               aria-label="حمایت مالی"
             >
               <Heart className="h-5 w-5" />
@@ -91,7 +91,7 @@ export function Header() {
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
-              className="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
+              className="bg-gray-100 dark:bg-gray-700/70 p-2 rounded-lg text-gray-700 hover:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-800 transition-colors"
               aria-label={isDark ? 'حالت روشن' : 'حالت تیره'}
             >
               {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
@@ -103,7 +103,7 @@ export function Header() {
             {/* Mobile Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="bg-gray-100 dark:bg-gray-700 p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors hover:bg-gray-200 dark:hover:bg-gray-700"
+              className="bg-gray-100 dark:bg-gray-700/70 p-2 rounded-lg text-gray-700 hover:bg-gray-200 dark:text-gray-200 dark:hover:bg-gray-800 transition-colors"
               aria-label={isDark ? 'حالت روشن' : 'حالت تیره'}
             >
               {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
