@@ -315,11 +315,11 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
               {sessionsWithExercise.map(({ session, sessionExercise }) => (
                 <div key={session.id} className="p-3 border border-gray-200 dark:border-gray-600 rounded-lg">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2 space-x-reverse text-green-600 dark:text-green-400">
+                    <div className="flex items-center space-x-2 space-x-reverse text-gray-900 dark:text-white">
                       <span>{session.name}</span>
                     </div>
                     <div className="flex items-center space-x-2 space-x-reverse gap-2">
-                      <Link href={`/my-workouts?sessionId=${session.id}`} title="مشاهده جلسه" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm">
+                      <Link href={`/my-workouts?sessionId=${session.id}`} title="مشاهده جلسه" className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                       <Eye className="h-5 w-5" />
                       </Link>
                       <button onClick={() => handleEditNotes(session.id, sessionExercise.notes)} title="ویرایش" className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
