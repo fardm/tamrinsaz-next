@@ -215,11 +215,11 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
 
   // Render
   return (
-    <main className="grid grid-cols-1 md:grid-cols-6 gap-6 md:w-[65vw] mx-auto my-8 px-4">
+    <main className="grid grid-cols-1 md:grid-cols-6 gap-6 max-w-7xl mx-auto px-1 sm:px-2 lg:px-8 my-8">
       {/* Main Content */}
-      <div className="col-span-1 md:col-span-4 rounded-lg grid gap-6">
+      <div className="col-span-1 md:col-span-4 rounded-lg space-y-6">
         {/* Title */}
-        <div className="border rounded-lg p-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+        <div className="border rounded-lg p-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 h-fit">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{exercise.name}</h1>
           {exercise.otherNames && (
             <p className="text-gray-600 dark:text-gray-400 mb-4">{exercise.otherNames}</p>
@@ -227,41 +227,46 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
 
           {/* Details */}
           <div className="flex flex-col divide-y-2 divide-gray-200/10">
-            <div className="flex gap-2 py-4">
+            {/* عضلات درگیر */}
+            <div className="flex gap-1 py-4">
               <h2 className="text-base font-semibold text-gray-900 dark:text-white">عضلات درگیر:</h2>
               <div className="flex flex-wrap gap-2">
                 {exercise.targetMuscles.map((muscle, index) => (
                   <button
                     key={index}
                     onClick={() => handleMuscleClick(muscle)}
-                    className="text-blue-800 hover:text-blue-500 dark:text-blue-200 dark:hover:text-blue-100 bg-blue-100 hover:bg-blue-50 dark:bg-blue-900/40 hover:dark:bg-blue-800/70 rounded-full px-3"
+                    className="text-blue-800 hover:text-blue-500 dark:text-blue-200 dark:hover:text-blue-100 bg-blue-100 hover:bg-blue-50 dark:bg-blue-900/40 hover:dark:bg-blue-800/70 rounded-full px-2"
                   >
                     {muscle}
                   </button>
                 ))}
               </div>
             </div>
-            <div className="flex gap-2 py-4">
+
+            {/* وسایل */}
+            <div className="flex gap-1 py-4">
               <h2 className="text-base font-semibold text-gray-900 dark:text-white">وسایل مورد نیاز:</h2>
               <div className="flex flex-wrap gap-2">
                 {exercise.equipment && (
                   <button
                     onClick={() => handleEquipmentClick(exercise.equipment)}
-                    className="text-blue-800 hover:text-blue-500 dark:text-blue-200 dark:hover:text-blue-100 bg-blue-100 hover:bg-blue-50 dark:bg-blue-900/40 hover:dark:bg-blue-800/70 rounded-full px-3"
+                    className="text-blue-800 hover:text-blue-500 dark:text-blue-200 dark:hover:text-blue-100 bg-blue-100 hover:bg-blue-50 dark:bg-blue-900/40 hover:dark:bg-blue-800/70 rounded-full px-2"
                   >
                     {exercise.equipment}
                   </button>
                 )}
               </div>
             </div>
+
+            {/* نوع تمرین */}
             {exercise.type && (
               <>
-                <div className="flex gap-2 py-4">
+                <div className="flex gap-1 py-4">
                   <h2 className="text-base font-semibold text-gray-900 dark:text-white">نوع تمرین:</h2>
                   <div className="flex flex-wrap gap-2">
                     <button
                       onClick={() => handleExerciseTypeClick(exercise.type!)}
-                      className="text-blue-800 hover:text-blue-500 dark:text-blue-200 dark:hover:text-blue-100 bg-blue-100 hover:bg-blue-50 dark:bg-blue-900/40 hover:dark:bg-blue-800/70 rounded-full px-3"
+                      className="text-blue-800 hover:text-blue-500 dark:text-blue-200 dark:hover:text-blue-100 bg-blue-100 hover:bg-blue-50 dark:bg-blue-900/40 hover:dark:bg-blue-800/70 rounded-full px-2"
                     >
                       {exercise.type}
                     </button>

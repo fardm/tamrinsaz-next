@@ -81,7 +81,7 @@ export const exercisesData: Exercise[] = [
     type: 'قدرتی',
     image: '8.webp',
     otherNames: 'Reverse Standing Wrist Curl',
-    description: '<iframe width="100%" height="300" src="https://www.youtube.com/embed/W90kPj32ja4?si=dCOFfZ-B-iwE7Ohr&amp;start=25" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
+    description: '<iframe width="100%" height="400" src="https://www.youtube.com/embed/W90kPj32ja4?si=dCOFfZ-B-iwE7Ohr&amp;start=25" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
   },
   {
     id: '9',
@@ -470,7 +470,7 @@ export const exercisesData: Exercise[] = [
     type: 'قدرتی',
     image: '47.webp',
     otherNames: '',
-    description: '<iframe width="100%" height="300" src="https://www.youtube.com/embed/W90kPj32ja4?si=dCOFfZ-B-iwE7Ohr&amp;start=16" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
+    description: '<iframe width="100%" height="400" src="https://www.youtube.com/embed/W90kPj32ja4?si=dCOFfZ-B-iwE7Ohr&amp;start=16" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
   },
   {
     id: '48',
@@ -1130,7 +1130,7 @@ export const exercisesData: Exercise[] = [
     type: 'قدرتی',
     image: '112.webp',
     otherNames: 'Dumbbell One Arm Bent Over Row',
-    description: '<iframe width="100%" height="300" src="https://www.youtube.com/embed/8AqpydEW0kc?si=VP6vRjInkBK5vW9V" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
+    description: '<iframe width="100%" height="400" src="https://www.youtube.com/embed/8AqpydEW0kc?si=VP6vRjInkBK5vW9V" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
   },
   {
     id: '113',
@@ -1140,7 +1140,7 @@ export const exercisesData: Exercise[] = [
     type: 'قدرتی',
     image: '113.webp',
     otherNames: '',
-    description: '<iframe width="100%" height="300" src="https://www.youtube.com/embed/NrIiL_okoho?si=nuLldmQ23bM_KSs1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
+    description: '<iframe width="100%" height="400" src="https://www.youtube.com/embed/NrIiL_okoho?si=nuLldmQ23bM_KSs1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
   },
   {
     id: '114',
@@ -1150,7 +1150,7 @@ export const exercisesData: Exercise[] = [
     type: 'قدرتی',
     image: '114.webp',
     otherNames: 'Dumbbell Reverse Wrist Curl',
-    description: '<iframe width="100%" height="300" src="https://www.youtube.com/embed/NrIiL_okoho?si=MFs5jjmSRuZdOWyP&amp;start=7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
+    description: '<iframe width="100%" height="400" src="https://www.youtube.com/embed/NrIiL_okoho?si=MFs5jjmSRuZdOWyP&amp;start=7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
   },
   {
     id: '115',
@@ -1160,7 +1160,7 @@ export const exercisesData: Exercise[] = [
     type: 'قدرتی',
     image: '115.webp',
     otherNames: '',
-    description: '<iframe width="100%" height="300" src="https://www.youtube.com/embed/NrIiL_okoho?si=O3lbwphxhI_B2FdU&amp;start=16" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
+    description: '<iframe width="100%" height="400" src="https://www.youtube.com/embed/NrIiL_okoho?si=O3lbwphxhI_B2FdU&amp;start=16" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
   },
 ];
 
