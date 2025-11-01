@@ -297,7 +297,7 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
             alt={exercise.name}
             fill
             sizes="(max-width: 768px) 100vw, 20rem"
-            // style={{ objectFit: 'contain' }}
+            style={{ objectFit: 'cover' }}
             priority
           />
         </div>
