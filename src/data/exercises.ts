@@ -1225,11 +1225,11 @@ export const exercisesData: Exercise[] = [
   {
     id: '122',
     name: 'زیر بغل سیمکس دست معکوس',
-    targetMuscles: ['پشت بازو'],
-    equipment: 'بدون وسیله',
+    targetMuscles: ['لت'],
+    equipment: 'دستگاه',
     type: 'قدرتی',
-    image: '121.webp',
-    otherNames: 'Body Up',
+    image: '122.webp',
+    otherNames: '',
     // description: '<iframe width="315" height="560" class="justify-self-center rounded-xl" src="https://www.youtube.com/embed/m0WBwgBitRM?start=13&end=18" title="YouTube Shorts" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
   },
 ];
