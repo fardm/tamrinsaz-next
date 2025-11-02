@@ -1151,7 +1151,8 @@ export const exercisesData: Exercise[] = [
     type: 'قدرتی',
     image: '114.webp',
     otherNames: 'Dumbbell Reverse Wrist Curl',
-    description: '<iframe width="100%" height="400" src="https://www.youtube.com/embed/NrIiL_okoho?si=MFs5jjmSRuZdOWyP&amp;start=7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
+    description: '<iframe width="315" height="560" class="justify-self-center rounded-xl" src="https://www.youtube.com/embed/ffi54kmmk6c?start=7&end=15" title="YouTube Shorts" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+
   },
   {
     id: '115',
@@ -1161,7 +1162,8 @@ export const exercisesData: Exercise[] = [
     type: 'قدرتی',
     image: '115.webp',
     otherNames: '',
-    description: '<iframe width="100%" height="400" src="https://www.youtube.com/embed/NrIiL_okoho?si=O3lbwphxhI_B2FdU&amp;start=16" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
+    description: '<iframe width="315" height="560" class="justify-self-center rounded-xl" src="https://www.youtube.com/embed/ffi54kmmk6c?start=16&end=25" title="YouTube Shorts" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+
   },
   {
     id: '116',
