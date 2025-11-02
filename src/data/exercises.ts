@@ -81,7 +81,7 @@ export const exercisesData: Exercise[] = [
     type: 'قدرتی',
     image: '8.webp',
     otherNames: 'Reverse Standing Wrist Curl',
-    description: '<iframe width="100%" height="400" src="https://www.youtube.com/embed/W90kPj32ja4?si=dCOFfZ-B-iwE7Ohr&amp;start=25" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
+    description: '<iframe width="315" height="560" class="justify-self-center rounded-xl" src="https://www.youtube.com/embed/W90kPj32ja4?start=24&end=31" title="YouTube Shorts" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
   },
   {
     id: '9',
@@ -719,7 +719,8 @@ export const exercisesData: Exercise[] = [
     type: 'قدرتی',
     image: '71.webp',
     otherNames: 'Lever Seated Fly',
-    description: '<a href="https://musclewiki.com/machine/male/chest/machine-pec-fly" target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
+    description: '<iframe width="315" height="560" class="justify-self-center rounded-xl" src="https://www.youtube.com/embed/2DwxvvQScEg" title="YouTube Shorts" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> <a href="https://musclewiki.com/machine/male/chest/machine-pec-fly" target="_blank" rel="noopener noreferrer">MuscleWiki</a>',
+
   },
   {
     id: '72',
