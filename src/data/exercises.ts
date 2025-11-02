@@ -713,7 +713,7 @@ export const exercisesData: Exercise[] = [
   },
   {
     id: '71',
-    name: 'فلای دستگاه',
+    name: 'فلای سینه با دستگاه',
     targetMuscles: ['سینه'],
     equipment: 'دستگاه',
     type: 'قدرتی',
@@ -1215,6 +1215,16 @@ export const exercisesData: Exercise[] = [
   {
     id: '121',
     name: 'بادی آپ',
+    targetMuscles: ['پشت بازو'],
+    equipment: 'بدون وسیله',
+    type: 'قدرتی',
+    image: '121.webp',
+    otherNames: 'Body Up',
+    // description: '<iframe width="315" height="560" class="justify-self-center rounded-xl" src="https://www.youtube.com/embed/m0WBwgBitRM?start=13&end=18" title="YouTube Shorts" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+  },
+  {
+    id: '122',
+    name: 'زیر بغل سیمکس دست معکوس',
     targetMuscles: ['پشت بازو'],
     equipment: 'بدون وسیله',
     type: 'قدرتی',
