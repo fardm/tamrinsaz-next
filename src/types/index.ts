@@ -12,7 +12,7 @@ export interface Exercise {
 export interface WorkoutSession {
   id: string;
   name: string;
-  exercises: SessionExercise[];
+  items: SessionItem[];
   createdAt: Date;
 }
 
@@ -20,6 +20,18 @@ export interface SessionExercise {
   exerciseId: string;
   completed: boolean;
   notes?: string; // فیلد اختیاری برای یادداشت‌ها
+}
+
+export type SessionItem = SingleSessionItem | SupersetSessionItem;
+
+export interface SingleSessionItem {
+  type: 'single';
+  exercise: SessionExercise;
+}
+
+export interface SupersetSessionItem {
+  type: 'superset';
+  exercises: [SessionExercise, SessionExercise];
 }
 
 export interface UserData {

@@ -1,15 +1,15 @@
 // src/app/my-workouts/page.tsx
 "use client";
 
-import React, { useState, useEffect, useRef, Suspense } from 'react';
+import React, { useState, useEffect, useRef, Suspense, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Plus, PanelRightOpen, PanelRightClose, Download, Upload, Trash2, HelpCircle, Bot } from 'lucide-react';
 import { SessionCard } from '../../components/SessionCard';
 import { exercisesData } from '../../data/exercises';
-import { UserData, WorkoutSession, SessionExercise } from '../../types';
+import { UserData, WorkoutSession, SessionExercise, SessionItem } from '../../types';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
-import { saveUserData, clearUserData } from '../../utils/storage';
+import { saveUserData, clearUserData, getUserData, normalizeSession } from '../../utils/storage';
 
 // ایمپورت پویا برای مودال‌ها
 import dynamic from 'next/dynamic';
@@ -61,6 +61,11 @@ export default function MyWorkoutsPage() {
     }
   }, []); // با [], این useEffect فقط یک بار پس از اولین رندر کلاینت اجرا می‌شود.
 
+  useEffect(() => {
+    // نرمال‌سازی داده‌های قدیمی به ساختار جدید (فقط یک‌بار پس از mount)
+    setUserData(getUserData());
+  }, []);
+
 
   const sidebarRef = useRef<HTMLDivElement>(null); // رفرنس برای سایدبار.
 
@@ -74,6 +79,10 @@ export default function MyWorkoutsPage() {
 
   const clearModalRef = useRef<HTMLDivElement>(null); 
   const helpModalRef = useRef<HTMLDivElement>(null); 
+
+  const normalizedUserData: UserData = useMemo(() => ({
+    sessions: (userData.sessions || []).map(normalizeSession)
+  }), [userData.sessions]);
 
   // تابع برای به‌روزرسانی داده‌های کاربر و ذخیره آن‌ها در localStorage.
   const handleUpdateUserData = (newData: UserData) => {
@@ -132,7 +141,7 @@ export default function MyWorkoutsPage() {
   }, [isSidebarOpen, showNewSessionModal, showClearConfirm, showHelpModal, showExportProgramModal, showImportProgramModal]);
 
   // فیلتر کردن جلسات بر اساس تب فعال.
-  const filteredSessions = userData.sessions.filter(session => {
+  const filteredSessions = normalizedUserData.sessions.filter(session => {
     if (activeTab === 'all') {
       return true;
     }
@@ -144,12 +153,12 @@ export default function MyWorkoutsPage() {
     const newSession: WorkoutSession = {
       id: Date.now().toString(),
       name: sessionName,
-      exercises: [],
+      items: [],
       createdAt: new Date()
     };
 
     handleUpdateUserData({
-      sessions: [...userData.sessions, newSession]
+      sessions: [...normalizedUserData.sessions, newSession]
     });
     setShowNewSessionModal(false); // بستن مودال پس از ایجاد.
     setActiveTab(newSession.id); // فعال کردن تب جلسه جدید.
@@ -158,13 +167,22 @@ export default function MyWorkoutsPage() {
 
   // تابع برای تغییر وضعیت تکمیل شدن یک تمرین در جلسه.
   const handleToggleExercise = (sessionId: string, exerciseId: string) => {
-    const updatedSessions = userData.sessions.map(session => {
+    const updatedSessions = normalizedUserData.sessions.map(session => {
       if (session.id === sessionId) {
         return {
           ...session,
-          exercises: session.exercises.map(ex =>
-            ex.exerciseId === exerciseId ? { ...ex, completed: !ex.completed } : ex
-          )
+          items: session.items.map(item => {
+            if (item.type === 'single' && item.exercise.exerciseId === exerciseId) {
+              return { ...item, exercise: { ...item.exercise, completed: !item.exercise.completed } };
+            }
+            if (item.type === 'superset') {
+              const updatedExercises = item.exercises.map(ex =>
+                ex.exerciseId === exerciseId ? { ...ex, completed: !ex.completed } : ex
+              ) as [SessionExercise, SessionExercise];
+              return { ...item, exercises: updatedExercises };
+            }
+            return item;
+          })
         };
       }
       return session;
@@ -173,13 +191,13 @@ export default function MyWorkoutsPage() {
     handleUpdateUserData({ sessions: updatedSessions });
   };
 
-  // تابع برای حذف یک تمرین از جلسه.
-  const handleRemoveExercise = (sessionId: string, exerciseId: string) => {
-    const updatedSessions = userData.sessions.map(session => {
+  // تابع برای حذف یک آیتم از جلسه.
+  const handleRemoveItem = (sessionId: string, itemIndex: number) => {
+    const updatedSessions = normalizedUserData.sessions.map(session => {
       if (session.id === sessionId) {
         return {
           ...session,
-          exercises: session.exercises.filter(ex => ex.exerciseId !== exerciseId)
+          items: session.items.filter((_, idx) => idx !== itemIndex)
         };
       }
       return session;
@@ -190,7 +208,7 @@ export default function MyWorkoutsPage() {
 
   // تابع برای حذف یک جلسه کامل.
   const handleDeleteSession = (sessionId: string) => {
-    const updatedSessions = userData.sessions.filter(session => session.id !== sessionId);
+    const updatedSessions = normalizedUserData.sessions.filter(session => session.id !== sessionId);
     handleUpdateUserData({ sessions: updatedSessions });
     if (activeTab === sessionId) { // اگر تب فعال همان جلسه‌ای بود که حذف شد.
       setActiveTab('all'); // به تب "همه" برگرد.
@@ -200,7 +218,7 @@ export default function MyWorkoutsPage() {
 
   // تابع برای تغییر نام یک جلسه.
   const handleRenameSession = (sessionId: string, newName: string) => {
-    const updatedSessions = userData.sessions.map(session =>
+    const updatedSessions = normalizedUserData.sessions.map(session =>
       session.id === sessionId ? { ...session, name: newName } : session
     );
     handleUpdateUserData({ sessions: updatedSessions });
@@ -208,12 +226,12 @@ export default function MyWorkoutsPage() {
   };
 
   // تابع جدید برای به‌روزرسانی ترتیب تمرینات در یک جلسه
-  const handleReorderExercises = (sessionId: string, reorderedExercises: SessionExercise[]) => {
-    const updatedSessions = userData.sessions.map(session => {
+  const handleReorderItems = (sessionId: string, reorderedItems: SessionItem[]) => {
+    const updatedSessions = normalizedUserData.sessions.map(session => {
       if (session.id === sessionId) {
         return {
           ...session,
-          exercises: reorderedExercises
+          items: reorderedItems
         };
       }
       return session;
@@ -387,7 +405,7 @@ export default function MyWorkoutsPage() {
               برنامه من
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              {userData.sessions.length} جلسه تمرینی
+              {normalizedUserData.sessions.length} جلسه تمرینی
             </p>
           </div>
 
@@ -403,7 +421,7 @@ export default function MyWorkoutsPage() {
             >
               همه
             </button>
-            {userData.sessions.map(session => (
+            {normalizedUserData.sessions.map(session => (
               <button
                 key={session.id}
                 onClick={() => setActiveTab(session.id)}
@@ -428,7 +446,7 @@ export default function MyWorkoutsPage() {
               className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="all">همه جلسات</option>
-              {userData.sessions.map(session => (
+              {normalizedUserData.sessions.map(session => (
                 <option key={session.id} value={session.id}>
                   {session.name}
                 </option>
@@ -445,10 +463,10 @@ export default function MyWorkoutsPage() {
                   session={session}
                   exercises={exercisesData}
                   onToggleExercise={handleToggleExercise}
-                  onRemoveExercise={handleRemoveExercise}
+                  onRemoveItem={handleRemoveItem}
                   onDeleteSession={handleDeleteSession}
                   onRenameSession={handleRenameSession}
-                  onReorderExercises={handleReorderExercises} // ارسال پراپ جدید
+                  onReorderItems={handleReorderItems} // ارسال پراپ جدید
                 />
               ))}
             </div>
@@ -492,7 +510,7 @@ export default function MyWorkoutsPage() {
         <ExportProgramModal
           isOpen={showExportProgramModal}
           onClose={() => setShowExportProgramModal(false)}
-          userData={userData}
+          userData={normalizedUserData}
           showToast={showToast}
         />
       )}

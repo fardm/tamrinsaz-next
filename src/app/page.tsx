@@ -83,9 +83,22 @@ export default function HomePage() {
   const getSessionName = useCallback((exerciseId: string): string | undefined => {
     if (!userData || !userData.sessions) return undefined;
     for (const session of userData.sessions) {
-      if (session.exercises.some(ex => ex.exerciseId === exerciseId)) {
-        return session.name;
-      }
+      const items = (session as any).items as any[];
+      const exercises = (session as any).exercises as any[];
+
+      if (Array.isArray(items)) {
+        const foundInItems = items.some((item) => {
+          if (item.type === 'single') return item.exercise?.exerciseId === exerciseId;
+          if (item.type === 'superset') return item.exercises?.some((ex: any) => ex.exerciseId === exerciseId);
+          return false;
+        });
+        if (foundInItems) return session.name;
+      } else if (Array.isArray(exercises)) {
+        // ساختار قدیمی برای پشتیبانی حداقلی
+        if (exercises.some(ex => ex.exerciseId === exerciseId)) {
+          return session.name;
+        }
+      } 
     }
     return undefined;
   }, [userData]); 

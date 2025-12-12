@@ -87,9 +87,10 @@ export function ImportProgramModal({ isOpen, onClose, onUpdateUserData, showToas
         if (!dataToImport || !Array.isArray(dataToImport.sessions)) {
           throw new Error('ساختار JSON نامعتبر است.');
         }
-        // Convert date strings back to Date objects
-        dataToImport.sessions = dataToImport.sessions.map((session: WorkoutSession) => ({ // <--- این خط اصلاح شد
+        // Convert date strings back to Date objects و اطمینان از وجود فیلد items
+        dataToImport.sessions = dataToImport.sessions.map((session: WorkoutSession) => ({
           ...session,
+          items: session.items || [],
           createdAt: new Date(session.createdAt || Date.now())
         }));
       } catch (error) {

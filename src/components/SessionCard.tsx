@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { WorkoutSession, Exercise, SessionExercise } from '../types';
+import { WorkoutSession, Exercise, SessionExercise, SessionItem } from '../types';
 import { Trash2, SquarePen, GripVertical, Eraser } from 'lucide-react'; 
 import Link from 'next/link';
 import Image from 'next/image';
@@ -11,27 +11,27 @@ interface SessionCardProps {
   session: WorkoutSession;
   exercises: Exercise[];
   onToggleExercise: (sessionId: string, exerciseId: string) => void;
-  onRemoveExercise: (sessionId: string, exerciseId: string) => void;
+  onRemoveItem: (sessionId: string, itemIndex: number) => void;
   onDeleteSession: (sessionId: string) => void;
   onRenameSession: (sessionId: string, newName: string) => void;
   // پراپ جدید برای به‌روزرسانی ترتیب تمرینات
-  onReorderExercises: (sessionId: string, reorderedExercises: SessionExercise[]) => void;
+  onReorderItems: (sessionId: string, reorderedItems: SessionItem[]) => void;
 }
 
 export function SessionCard({
   session,
   exercises,
   onToggleExercise,
-  onRemoveExercise,
+  onRemoveItem,
   onDeleteSession,
   onRenameSession,
-  onReorderExercises // دریافت پراپ جدید
+  onReorderItems // دریافت پراپ جدید
 }: SessionCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(session.name);
   const [isDeleteExerciseModalOpen, setIsDeleteExerciseModalOpen] = useState(false);
   const [isDeleteSessionModalOpen, setIsDeleteSessionModalOpen] = useState(false);
-  const [exerciseToDelete, setExerciseToDelete] = useState<string | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<number | null>(null);
   const editModalRef = useRef<HTMLDivElement>(null);
   const deleteExerciseModalRef = useRef<HTMLDivElement>(null);
   const deleteSessionModalRef = useRef<HTMLDivElement>(null);
@@ -41,8 +41,11 @@ export function SessionCard({
   // وضعیت برای ذخیره index محل رها کردن (جایی که خط نشانگر نمایش داده می‌شود)
   const [dropTargetIndex, setDropTargetIndex] = useState<number | null>(null);
 
-  const completedCount = session.exercises.filter(ex => ex.completed).length;
-  const totalCount = session.exercises.length;
+  const completedCount = session.items.reduce((acc, item) => {
+    if (item.type === 'single') return acc + (item.exercise.completed ? 1 : 0);
+    return acc + item.exercises.filter(ex => ex.completed).length;
+  }, 0);
+  const totalCount = session.items.reduce((acc, item) => acc + (item.type === 'single' ? 1 : 2), 0);
   const progressPercentage = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
   const handleSaveEdit = () => {
@@ -57,22 +60,22 @@ export function SessionCard({
     setIsEditing(false);
   }, [session.name]);
 
-  const handleOpenDeleteExerciseModal = (exerciseId: string) => {
-    setExerciseToDelete(exerciseId);
+  const handleOpenDeleteExerciseModal = (itemIndex: number) => {
+    setItemToDelete(itemIndex);
     setIsDeleteExerciseModalOpen(true);
   };
 
   const handleConfirmDeleteExercise = () => {
-    if (exerciseToDelete) {
-      onRemoveExercise(session.id, exerciseToDelete);
+    if (itemToDelete !== null) {
+      onRemoveItem(session.id, itemToDelete);
     }
     setIsDeleteExerciseModalOpen(false);
-    setExerciseToDelete(null);
+    setItemToDelete(null);
   };
 
   const handleCancelDeleteExercise = useCallback(() => {
     setIsDeleteExerciseModalOpen(false);
-    setExerciseToDelete(null);
+    setItemToDelete(null);
   }, []);
 
   const handleOpenDeleteSessionModal = () => {
@@ -128,11 +131,11 @@ export function SessionCard({
 
     if (dragItem.current === null || dropTargetIndex === null) return;
 
-    const newExercises = [...session.exercises];
-    const draggedExercise = newExercises[dragItem.current];
+    const newItems = [...session.items];
+    const draggedItem = newItems[dragItem.current];
 
     // حذف آیتم کشیده شده از مکان قبلی
-    newExercises.splice(dragItem.current, 1);
+    newItems.splice(dragItem.current, 1);
 
     // تنظیم index نهایی برای درج
     let finalDropIndex = dropTargetIndex;
@@ -142,10 +145,10 @@ export function SessionCard({
     }
     
     // اضافه کردن آیتم کشیده شده به مکان جدید
-    newExercises.splice(finalDropIndex, 0, draggedExercise);
+    newItems.splice(finalDropIndex, 0, draggedItem);
 
     // به‌روزرسانی ترتیب تمرینات در کامپوننت والد
-    onReorderExercises(session.id, newExercises);
+    onReorderItems(session.id, newItems);
 
     dragItem.current = null;
   };
@@ -328,29 +331,14 @@ export function SessionCard({
       </div>
 
       <div className="space-y-3">
-        {session.exercises.length > 0 ? (
-          session.exercises.map((sessionExercise, index) => {
-            const exercise = exercises.find(ex => ex.id === sessionExercise.exerciseId);
-            if (!exercise) return null;
+        {session.items.length > 0 ? (
+          session.items.map((item, index) => {
+            const renderExerciseRow = (sessionExercise: SessionExercise) => {
+              const exercise = exercises.find(ex => ex.id === sessionExercise.exerciseId);
+              if (!exercise) return null;
 
-            return (
-              <React.Fragment key={sessionExercise.exerciseId}>
-                {/* خط نشانگر محل رها کردن */}
-                {dropTargetIndex === index && (
-                  <div className="h-1 bg-blue-500 my-1 rounded-full transition-all duration-200 ease-in-out"></div>
-                )}
-                <div
-                  className={`exercise-card-draggable relative flex items-center space-x-2 space-x-reverse px-2 py-3 bg-gray-50 dark:bg-gray-700 rounded-lg flex-wrap transition-all duration-200 ease-in-out
-                    ${dragItem.current === index ? 'opacity-50 shadow-lg scale-[1.02] z-10' : ''}
-                  `}
-                  draggable
-                  onDragStart={(e) => handleDragStart(e, index)}
-                  onDragOver={(e) => handleDragOver(e, index)} // استفاده از onDragOver برای بازخورد مداوم
-                  onDragEnd={handleDragEnd}
-                  onDrop={handleDrop}
-                >
-                  <GripVertical className="h-5 w-5 text-gray-400 cursor-grab flex-shrink-0" />
-
+              return (
+                <div className="flex items-center space-x-2 space-x-reverse">
                   <div className="flex items-center ml-auto flex-shrink-0">
                     <input
                       type="checkbox"
@@ -359,7 +347,6 @@ export function SessionCard({
                       className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                     />
                   </div>
-
 
                   <div className="relative w-12 h-12 flex-shrink-0 rounded-lg overflow-hidden">
                     <Image
@@ -382,21 +369,57 @@ export function SessionCard({
                       {exercise.name}
                     </Link>
                     {sessionExercise.notes && (
-                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 break-words">
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 break-words text-end" dir="ltr">
                         {sessionExercise.notes}
                       </p>
                     )}
                   </div>
+                </div>
+              );
+            };
 
+            return (
+              <React.Fragment key={`${session.id}-item-${index}`}>
+                {/* خط نشانگر محل رها کردن */}
+                {dropTargetIndex === index && (
+                  <div className="h-1 bg-blue-500 my-1 rounded-full transition-all duration-200 ease-in-out"></div>
+                )}
+                <div
+                  className={`exercise-card-draggable relative flex flex-col gap-3 px-3 py-3 bg-gray-50 dark:bg-gray-700 rounded-lg transition-all duration-200 ease-in-out
+                    ${dragItem.current === index ? 'opacity-50 shadow-lg scale-[1.02] z-10' : ''}
+                  `}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, index)}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDragEnd={handleDragEnd}
+                  onDrop={handleDrop}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                      <GripVertical className="h-5 w-5 text-gray-400 cursor-grab flex-shrink-0" />
+                      {item.type === 'superset' ? <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-200 text-xs">سوپرست</span> : null}
+                      {item.type === 'single' ? <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-200 text-xs">سینگل‌ست</span> : null}
+                    </div>
+                    <button
+                      onClick={() => handleOpenDeleteExerciseModal(index)}
+                      title={item.type === 'superset' ? 'حذف سوپرست' : 'حذف تمرین'}
+                      className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 flex-shrink-0"
+                    >
+                      <Eraser className="h-4 w-4" />
+                    </button>
+                  </div>
 
-
-                  <button
-                    onClick={() => handleOpenDeleteExerciseModal(exercise.id)}
-                    title="حذف تمرین"
-                    className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 flex-shrink-0"
-                  >
-                    <Eraser className="h-4 w-4" />
-                  </button>
+                  {item.type === 'single' ? (
+                    renderExerciseRow(item.exercise)
+                  ) : (
+                    <div className="grid grid-cols-1 gap-3">
+                      {item.exercises.map((supersetExercise, idx) => (
+                        <div key={`${supersetExercise.exerciseId}-${idx}`} className="p-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800">
+                          {renderExerciseRow(supersetExercise)}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </React.Fragment>
             );
@@ -407,7 +430,7 @@ export function SessionCard({
           </p>
         )}
         {/* خط نشانگر در انتهای لیست اگر به آنجا کشیده شود */}
-        {dropTargetIndex === session.exercises.length && session.exercises.length > 0 && (
+        {dropTargetIndex === session.items.length && session.items.length > 0 && (
           <div className="h-1 bg-blue-500 my-1 rounded-full transition-all duration-200 ease-in-out"></div>
         )}
       </div>
