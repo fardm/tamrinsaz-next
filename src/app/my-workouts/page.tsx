@@ -62,9 +62,8 @@ export default function MyWorkoutsPage() {
   }, []); // با [], این useEffect فقط یک بار پس از اولین رندر کلاینت اجرا می‌شود.
 
   useEffect(() => {
-    // نرمال‌سازی داده‌های قدیمی به ساختار جدید (فقط یک‌بار پس از mount)
     setUserData(getUserData());
-  }, []);
+  }, [setUserData]);
 
 
   const sidebarRef = useRef<HTMLDivElement>(null); // رفرنس برای سایدبار.

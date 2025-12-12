@@ -83,25 +83,30 @@ export default function HomePage() {
   const getSessionName = useCallback((exerciseId: string): string | undefined => {
     if (!userData || !userData.sessions) return undefined;
     for (const session of userData.sessions) {
-      const items = (session as any).items as any[];
-      const exercises = (session as any).exercises as any[];
-
-      if (Array.isArray(items)) {
+      // چک نوع برای items (ساختار جدید)
+      const items = Array.isArray(session.items) ? session.items : []; // نوع inferred می‌شه
+  
+      // چک نوع برای exercises (ساختار قدیمی)
+      const exercises = 'exercises' in session && Array.isArray(session.exercises) 
+        ? session.exercises as { exerciseId: string }[] // فقط فیلد مورد نیاز رو تعریف کن
+        : [];
+  
+      if (items.length > 0) {
         const foundInItems = items.some((item) => {
           if (item.type === 'single') return item.exercise?.exerciseId === exerciseId;
-          if (item.type === 'superset') return item.exercises?.some((ex: any) => ex.exerciseId === exerciseId);
+          if (item.type === 'superset') return item.exercises?.some((ex) => ex.exerciseId === exerciseId);
           return false;
         });
         if (foundInItems) return session.name;
-      } else if (Array.isArray(exercises)) {
+      } else if (exercises.length > 0) {
         // ساختار قدیمی برای پشتیبانی حداقلی
         if (exercises.some(ex => ex.exerciseId === exerciseId)) {
           return session.name;
         }
-      } 
+      }
     }
     return undefined;
-  }, [userData]); 
+  }, [userData]);
 
   // استفاده از useMemo برای بهینه‌سازی فیلتر و مرتب‌سازی تمرینات.
   const filteredAndSortedExercises = useMemo(() => {

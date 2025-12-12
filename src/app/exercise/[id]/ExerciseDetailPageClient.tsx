@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { ArrowRight, Plus, X, SquarePen, Eye, Eraser } from 'lucide-react';
 import { exercisesData } from '../../../data/exercises';
 import dynamic from 'next/dynamic';
-import { UserData, WorkoutSession, SessionExercise, SessionItem } from '../../../types';
+import { UserData, SessionExercise, SessionItem } from '../../../types';
 // import { muscleOptions, equipmentOptionsList, exerciseTypeOptions } from '../../../components/FilterPanel';
 import { getUserData, saveUserData } from '../../../utils/storage';
 
@@ -179,16 +179,6 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
       return session;
     });
     handleUpdateUserData({ sessions: updatedSessions });
-  };
-
-  const handleCreateNewSession = (sessionName: string) => {
-    const newSession: WorkoutSession = {
-      id: Date.now().toString(),
-      name: sessionName,
-      items: [],
-      createdAt: new Date()
-    };
-    handleUpdateUserData({ sessions: [...userData.sessions, newSession] });
   };
 
   const handleRemoveFromSession = (sessionId: string, itemIndex: number) => {
@@ -460,7 +450,6 @@ export default function ExerciseDetailPageClient({ id }: { id: string }) {
           onClose={() => setShowAddModal(false)}
           sessions={userData.sessions}
           onAddToSessions={handleAddToSessions}
-          onCreateNewSession={handleCreateNewSession}
           exerciseId={exercise.id}
         />
       )}

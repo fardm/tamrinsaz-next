@@ -7,10 +7,7 @@ interface AddToWorkoutModalProps {
   isOpen: boolean;
   onClose: () => void;
   sessions: WorkoutSession[];
-  // Updated onAddToSessions to pass selected session IDs along with notes for the exercise
   onAddToSessions: (selectedSessions: { sessionId: string; notes: string; partnerNotes?: string; mode: 'single' | 'superset'; partnerExerciseId?: string }[]) => void;
-  // onCreateNewSession no longer receives exerciseNotes as the exercise is not added immediately
-  onCreateNewSession: (sessionName: string) => void;
   exerciseId: string;
 }
 
@@ -19,7 +16,6 @@ export function AddToWorkoutModal({
   onClose,
   sessions,
   onAddToSessions,
-  onCreateNewSession,
   exerciseId
 }: AddToWorkoutModalProps) {
   const [selectedSession, setSelectedSession] = useState<string>('');
@@ -56,8 +52,6 @@ export function AddToWorkoutModal({
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
-
   const availableSessions = sessions;
 
   const handleAddToSelected = () => {
@@ -83,9 +77,6 @@ export function AddToWorkoutModal({
     onClose(); // Close modal after adding exercise
   };
 
-  const isAnySessionSelected = !!selectedSession;
-  const isSupersetMode = mode === 'superset';
-
   const partnerOptions = useMemo(
     () =>
       exercisesData
@@ -98,16 +89,10 @@ export function AddToWorkoutModal({
     [exerciseId, partnerSearch]
   );
 
-  const sessionExerciseCount = (session: WorkoutSession) => {
-    const items = Array.isArray((session as any).items) ? (session as any).items : [];
-    const legacyExercises = Array.isArray((session as any).exercises) ? (session as any).exercises : [];
+  if (!isOpen) return null;
 
-    if (items.length > 0) {
-      return items.reduce((acc: number, item: any) => acc + (item.type === 'single' ? 1 : 2), 0);
-    }
-
-    return legacyExercises.length;
-  };
+  const isAnySessionSelected = !!selectedSession;
+  const isSupersetMode = mode === 'superset';
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

@@ -11,19 +11,29 @@ const isSessionExercise = (value: unknown): value is SessionExercise => {
   );
 };
 
-const normalizeItem = (item: any): SessionItem | null => {
+type RawSession = {
+  id?: unknown;
+  name?: unknown;
+  createdAt?: unknown;
+  items?: unknown;
+  exercises?: unknown;
+};
+
+const normalizeItem = (item: unknown): SessionItem | null => {
   if (!item || typeof item !== 'object') return null;
 
-  if (item.type === 'single' && isSessionExercise(item.exercise)) {
+  const rawItem = item as { type?: unknown; exercise?: unknown; exercises?: unknown };
+
+  if (rawItem.type === 'single' && isSessionExercise(rawItem.exercise)) {
     const single: SingleSessionItem = {
       type: 'single',
-      exercise: { ...item.exercise, notes: item.exercise.notes || '' }
+      exercise: { ...rawItem.exercise, notes: rawItem.exercise.notes || '' }
     };
     return single;
   }
 
-  if (item.type === 'superset' && Array.isArray(item.exercises) && item.exercises.length === 2) {
-    const [first, second] = item.exercises;
+  if (rawItem.type === 'superset' && Array.isArray(rawItem.exercises) && rawItem.exercises.length === 2) {
+    const [first, second] = rawItem.exercises;
     if (isSessionExercise(first) && isSessionExercise(second)) {
       const superset: SupersetSessionItem = {
         type: 'superset',
@@ -39,30 +49,37 @@ const normalizeItem = (item: any): SessionItem | null => {
   return null;
 };
 
-export const normalizeSession = (session: any): WorkoutSession => {
+export const normalizeSession = (session: unknown): WorkoutSession => {
+  const rawSession: RawSession = (session && typeof session === 'object') ? (session as RawSession) : {};
   const normalizedItems: SessionItem[] = [];
 
-  if (Array.isArray(session.items)) {
-    session.items.forEach((item: any) => {
-      const normalized = normalizeItem(item);
+  if (Array.isArray(rawSession.items)) {
+    rawSession.items.forEach((rawItem) => {
+      const normalized = normalizeItem(rawItem);
       if (normalized) normalizedItems.push(normalized);
     });
-  } else if (Array.isArray(session.exercises)) {
+  } else if (Array.isArray(rawSession.exercises)) {
     // مهاجرت از ساختار قدیمی به ساختار جدید
-    session.exercises.forEach((ex: SessionExercise) => {
-      if (isSessionExercise(ex)) {
+    (rawSession.exercises as unknown[]).forEach((rawExercise) => {
+      if (isSessionExercise(rawExercise)) {
         normalizedItems.push({
           type: 'single',
-          exercise: { ...ex, notes: ex.notes || '' }
+          exercise: { ...rawExercise, notes: rawExercise.notes || '' }
         });
       }
     });
   }
 
+  const rawCreatedAt = rawSession.createdAt;
+  const createdAt =
+    rawCreatedAt instanceof Date || typeof rawCreatedAt === 'string' || typeof rawCreatedAt === 'number'
+      ? new Date(rawCreatedAt)
+      : new Date();
+
   return {
-    id: session.id?.toString() || Date.now().toString(),
-    name: session.name || 'جلسه جدید',
-    createdAt: new Date(session.createdAt || Date.now()),
+    id: rawSession.id?.toString() || Date.now().toString(),
+    name: typeof rawSession.name === 'string' ? rawSession.name : 'جلسه جدید',
+    createdAt,
     items: normalizedItems
   };
 };
